@@ -1,0 +1,339 @@
+﻿<UserControl x:Class="DataViewConfig.Pages.CraneConfigPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataViewConfig.Pages"
+             xmlns:controls="clr-namespace:DataViewConfig.Controls"
+             xmlns:converter="clr-namespace:DataViewConfig.Converters" 
+              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:vm="clr-namespace:DataViewConfig.ViewModels" 
+             xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             d:DataContext="{d:DesignInstance Type=vm:CraneConfigViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="736" d:DesignWidth="1296" 
+             Background="{StaticResource Content.BackGround}" Foreground="White" FontSize="12"
+             Margin="5">
+    <UserControl.Resources>
+        <converter:Bool2VisibilityConverter x:Key="Bool2Visibility"/>
+       
+        <ObjectDataProvider x:Key="controlTypeEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:ControlType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <Style TargetType="DataGridCell">
+            <Setter Property="FontSize" Value="15"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+            </Style.Resources>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <!--<Setter Property="Foreground" Value="Red"/>-->
+                    <Setter Property="Background" Value="#004696"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+        <!--添加接口-->
+        <GroupBox Style="{StaticResource MultiHeaderGroupBox}" Background="{StaticResource  Content.Topbar.BackGround}" >
+            <GroupBox.Header>
+                <StackPanel  Width="3280" HorizontalAlignment="Stretch" Margin="-10 0 0 0" Orientation="Horizontal" Background="{StaticResource  Content.Topbar.BackGround}" >
+
+                    <StackPanel  Orientation="Horizontal" Width="150">
+                        <TextBlock Text="设备类别配置"  FontWeight="Bold" FontSize="18" Style="{StaticResource NormalText}" Margin="10"  VerticalAlignment="Bottom"  Background="{StaticResource  Content.Topbar.BackGround}"/>
+                        <controls:TipsLabel   TipName="[crane_config]multi_crane_group_title" />
+                    </StackPanel>
+                    <CheckBox x:Name="MultiCraneGroupConfigEnable"  FontWeight="Bold" FontSize="18" 
+                               VerticalAlignment="Bottom" Margin="12" Content="启用" FontFamily="{StaticResource NormalFamily}" IsChecked="{Binding CraneGroupEnable}" Foreground="White" />
+                </StackPanel>
+
+            </GroupBox.Header>
+            <StackPanel   Orientation="Vertical"  Margin="5" Visibility="{Binding CraneGroupEnable,Converter={StaticResource Bool2Visibility}}">
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="类别ID" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <TextBox x:Name="iCraneGroupId" Text="{Binding CraneGroupID}" Style="{StaticResource NormalTextBox}"/>
+                    <Label Content="类别名称" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <controls:TipsLabel   TipName="[crane_config]crane_group_name" />
+                    <TextBox x:Name="iGroupName"  Text="{Binding CraneGroupName}" Style="{StaticResource NormalTextBox}" />
+                    <!--<Label Content="类别描述" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <TextBox x:Name="iGroupDesc"  Text="{Binding CraneTypeDesc}" Style="{StaticResource NormalTextBox}" />-->
+                    <Button  Command="{Binding AddMultiCraneGroupCommand}"
+                Style="{StaticResource  NormalButton}" Content="确认添加"  Margin="10"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="设备类别列表" Style="{StaticResource NormalGroupBox}"  Visibility="{Binding CraneGroupEnable,Converter={StaticResource Bool2Visibility}}">
+
+            <DataGrid  Margin="5"  MaxHeight="150" ItemsSource="{Binding CraneGroupLst,IsAsync=True}"  
+                       Visibility="{Binding CraneGroupEnable,Converter={StaticResource Bool2Visibility}}"
+                       Style="{StaticResource NormalDataGrid}" >
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="操作"  Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="编辑" Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.EditCraneGroupCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                    <Button Content="删除"  Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteCraneGroupCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="ID"  Width="*" Binding="{Binding CraneGroupID}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="类别"  Width="*" Binding="{Binding CraneGroupName}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header=""  Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!--<DataGridTextColumn Header="单机PLC地址（ip)" Binding="{Binding crane_ip}"/>-->
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <GroupBox Style="{StaticResource MultiHeaderGroupBox}" Background="{StaticResource  Content.Topbar.BackGround}" >
+            <GroupBox.Header>
+                <StackPanel  Width="3280" HorizontalAlignment="Stretch" Margin="-10 0 0 0" Orientation="Horizontal" Background="{StaticResource  Content.Topbar.BackGround}" >
+                    <StackPanel  Orientation="Horizontal" Width="150" >
+                        <TextBlock Text="设备机型配置"  FontWeight="Bold" FontSize="18" Style="{StaticResource NormalText}" Margin="10"  VerticalAlignment="Bottom"  Background="{StaticResource  Content.Topbar.BackGround}"/>
+                        <controls:TipsLabel   TipName="[crane_config]multi_crane_type_title" />
+                    </StackPanel>
+                    <CheckBox x:Name="MultiCraneTypeConfigEnable"  FontWeight="Bold" FontSize="18" 
+                               VerticalAlignment="Bottom" Margin="12" Content="启用" FontFamily="{StaticResource NormalFamily}" IsChecked="{Binding CraneTypeEnable}" Foreground="White" />
+                   
+                </StackPanel>
+                
+            </GroupBox.Header>
+            <StackPanel   Orientation="Vertical"  Margin="5" Visibility="{Binding CraneTypeEnable,Converter={StaticResource Bool2Visibility}}">
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="机型ID" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <TextBox x:Name="iCraneCount1" Text="{Binding CraneTypeID}" Style="{StaticResource NormalTextBox}"/>
+                    <Label Content="机型名称" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <TextBox x:Name="a1"  Text="{Binding CraneTypeName}" Style="{StaticResource NormalTextBox}" />
+                    <Label Content="机型描述" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <TextBox x:Name="a21"  Text="{Binding CraneTypeDesc}" Style="{StaticResource NormalTextBox}" />
+                    <Button  Command="{Binding AddMultiCraneTypeCommand}"
+                Style="{StaticResource  NormalButton}" Content="确认添加"  Margin="10"/>
+                </StackPanel>
+                <!--<StackPanel  Orientation="Horizontal"  Margin="10 10 0 10" >
+                    <CheckBox x:Name="MultiSpreaderConfigEnable"   Content="多吊具匹配不同画面配置" IsChecked="{Binding CraneTypeSpreaderMatchEnable}" Foreground="White"  Margin="10" VerticalAlignment="Top"/>
+                    <controls:TipsLabel   TipName="[crane_config]multi_spreader_match" />
+                    <Button Content="&#xf067;" ToolTip="Add"  VerticalAlignment="Top" Margin="0 5 0 0"
+                                        Command="{Binding AddNewCraneSpreaderScreenCommand}" 
+                                        Style="{StaticResource ImageButton}" />
+                    <ItemsControl  Visibility="{Binding ElementName=MultiSpreaderConfigEnable,Path=IsChecked,Converter={StaticResource Bool2Visibility}}" VerticalAlignment="Top" 
+                                   ItemsSource="{Binding  CraneSpreaderMatchScreenModelLst}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                                    <Button Content="移除" Command="{Binding  RelativeSource= {RelativeSource AncestorType=ItemsControl},Path=DataContext.RemoveCraneTypeScreenCommand}" 
+                                            CommandParameter="{Binding spreader_id}"
+                                            Width="50" Style="{StaticResource NormalButton}"/>
+                                    <Label Content="吊具ID" Margin="5" Style="{StaticResource NormalLabel}"/>
+                                    <TextBox x:Name="a21"  Text="{Binding spreader_id}" Style="{StaticResource NormalTextBox}" />
+                                    <Label Content="匹配画面" Margin="5" Style="{StaticResource NormalLabel}"/>
+                                    <ComboBox Style="{DynamicResource NormalCombox}" Width="200" 
+                      ItemsSource="{Binding  RelativeSource= {RelativeSource AncestorType=ItemsControl},Path=DataContext.ScreenNameLst}"
+                      DisplayMemberPath="dv_screen_csw_name"  
+                      SelectedItem="{Binding screen_info}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>                   
+                </StackPanel>-->   
+            </StackPanel>
+        </GroupBox>
+        
+        <GroupBox Header="设备机型列表" Style="{StaticResource NormalGroupBox}"  Visibility="{Binding CraneTypeEnable,Converter={StaticResource Bool2Visibility}}">
+            
+            <DataGrid  Margin="5"  MaxHeight="150" ItemsSource="{Binding CraneTypeLst,IsAsync=True}"  
+                       Visibility="{Binding CraneTypeEnable,Converter={StaticResource Bool2Visibility}}"
+                       Style="{StaticResource NormalDataGrid}" >
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="操作"  Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="编辑" Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.EditCraneTypeCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                    <Button Content="删除"  Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteCraneTypeCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="ID"  Width="*" Binding="{Binding CraneTypeID}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="机型"  Width="*" Binding="{Binding CraneTypeName}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="描述"  Width="*" Binding="{Binding CraneTypeDesc}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!--<DataGridTextColumn Header="多吊具匹配不同画面配置"  Width="*" Binding="{Binding SpreaderMatchEnable}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>-->
+                    <!--<DataGridTextColumn Header="单机PLC地址（ip)" Binding="{Binding crane_ip}"/>-->
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <GroupBox Header="设备配置" Style="{StaticResource NormalGroupBox}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="45"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10 0 0 0">
+                    <Label Content="设备数量" Margin="5" Style="{StaticResource NormalLabel}"/>
+                    <TextBox x:Name="iCraneCount" Text="{Binding CraneCount}" Style="{StaticResource NormalTextBox}"/>
+
+                    <Label Content="设备名称格式" Margin="5 5 0 5" Style="{StaticResource NormalLabel}"/>
+                    <controls:TipsLabel   TipName="[crane_config]crane_name_format" />
+                    <TextBox x:Name="i2CraneCount"  Text="{Binding CranePrefixFormat}" Style="{StaticResource NormalTextBox}" />
+                    <CheckBox x:Name="IsConfigLocalPlcIPChkbox" Content="是否配置单机电控IP" IsChecked="{Binding CraneConfigIPEnable}" Margin="5 0 0 0" VerticalAlignment="Center" Foreground="White"/>
+                    <controls:TipsLabel   TipName="[crane_config]crane_ip_config_enable" />
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=IsConfigLocalPlcIPChkbox,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                        <Label Content="起始IP" Margin="5" Style="{StaticResource NormalLabel}"/>
+                        <TextBox x:Name="i2CraneCount22"  Text="{Binding StartLocalPLCIP}" Style="{StaticResource NormalTextBox}" />
+                    </StackPanel>
+                    <Button  Command="{Binding QuickCreateCommand}" VerticalAlignment="Top" CommandParameter="{Binding ElementName=iCraneCount,Path=Text}"
+                Style="{StaticResource  NormalButton}" Content="快速生成"  Margin="10"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="设备列表" Style="{StaticResource NormalGroupBox}" >
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0 -5 0 0 " Width="auto" LastChildFill="True" Background="{StaticResource  Content.Topbar.BackGround}">
+                  
+                    <StackPanel Orientation="Horizontal"  DockPanel.Dock="Right" Height="35">
+                        <Button Content="&#xf067;" ToolTip="Add" Width="80" VerticalAlignment="Center" Margin="0 5 0 0"
+                                        Command="{Binding AddNewCraneCommand}" 
+                                        Style="{StaticResource ImageButton}" />
+                        <Button Content="&#xf002;" Style="{DynamicResource ImageButton}" Width="80" VerticalAlignment="Center"
+                            Command="{Binding QueryCommand}" ToolTip="Query"/>
+                        <Button Content="&#xf0e2;" Style="{DynamicResource ImageButton}" Width="80" VerticalAlignment="Center"
+                            Command="{Binding ResetCommand}" ToolTip="Reset"/>
+                        <!--<Button Content="导入" Command="{Binding ImportBlockDataCommand}"  Width="80" Style="{DynamicResource NormalButton}" Margin="5" />
+                        <Button Content="导出"  Command="{Binding ExportBlockDataCommand}"  Width="80" Style="{DynamicResource NormalButton}" Margin="5" />-->
+                        <Button Content="导入" Command="{Binding ImportCsvCommand}" 
+            Style="{StaticResource NormalButton}" Width="80" Margin="5"/>
+                        <Button Content="导出" Command="{Binding ExportCsvCommand}" 
+            Style="{StaticResource NormalButton}" Width="80" Margin="5"/>
+                    </StackPanel>
+                    <ContentControl></ContentControl>
+                </DockPanel>
+
+                <FrameworkElement x:Name="dumpyElement" Visibility="Collapsed" />
+                <DataGrid Grid.Row="1" Margin="5" MinHeight="350" Height="350" ItemsSource="{Binding CraneModelLst}"   Style="{StaticResource NormalDataGrid}" >
+                    <DataGrid.Columns>
+
+                        <DataGridTemplateColumn Header="操作"  Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="编辑" Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.EditCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                        <Button Content="删除"  Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteCraneCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="设备ID"  Width="*" Binding="{Binding CraneID}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="设备名称"  Width="*" Binding="{Binding CraneName}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="设备机型" Visibility="{Binding DataContext.CraneTypeEnable,Converter={StaticResource Bool2Visibility},Source={x:Reference dumpyElement}}" Width="*" Binding="{Binding CraneTypeName}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="设备类别" Visibility="{Binding DataContext.CraneGroupEnable,Converter={StaticResource Bool2Visibility},Source={x:Reference dumpyElement}}" Width="*" Binding="{Binding CraneGroupName}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="单机IP"  Visibility="{Binding DataContext.CraneConfigIPEnable,Converter={StaticResource Bool2Visibility},Source={x:Reference dumpyElement}}"  Width="*" Binding="{Binding CraneIP}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style>
+                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <!--<DataGridTextColumn Header="单机PLC地址（ip)" Binding="{Binding crane_ip}"/>-->
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+    </StackPanel>
+</UserControl>

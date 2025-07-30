@@ -1,0 +1,879 @@
+﻿<Window  
+     x:Name="NewRpcEditPopupWin" 
+    x:Class="DataViewConfig.Pages.Popups.NewRpcEditPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataViewConfig.Pages.Popups"
+         xmlns:controls="clr-namespace:DataViewConfig.Controls"
+        xmlns:current="clr-namespace:DataViewConfig"
+        xmlns:converter="clr-namespace:DataViewConfig.Converters" 
+        xmlns:vm="clr-namespace:DataViewConfig.ViewModels" 
+        xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:hc="https://handyorg.github.io/handycontrol"
+        d:DataContext="{d:DesignInstance Type=vm:NewRpcEditPopupViewModel}"
+        mc:Ignorable="d"
+        Height="750" Width="950" 
+        Foreground="White"
+        WindowStartupLocation="CenterScreen" 
+        Background="{StaticResource NormalBackGround}" FontSize="{StaticResource NormalFontSize}"
+        ResizeMode="NoResize"  Title="接口编辑"   SizeToContent="WidthAndHeight" MaxWidth="1280"
+         FontFamily="pack://application:,,,/DataViewConfig;component/Fonts/fontawesome-webfont.ttf#FontAwesome"
+   >
+<Window.Resources>
+        <converter:ParamSelectOther2VisibilityConverter x:Key="ParamSelectOther2Visibility" />
+        <converter:ParamAddNew2VisibilityConverter x:Key="ParamAddNew2Visibility" />
+        <converter:ParamEditExist2VisibilityConverter x:Key="ParamEditExist2Visibility" />
+        <converter:ParamAddOrEidt2VisibilityConverter x:Key="ParamEditOrAdd2Visibility" />
+        <converter:ParamEidt2ReverseBooleanConverter x:Key="ParamEdit2ReverseBool" />
+        <converter:Bool2VisibilityConverter x:Key="Bool2Visibility"/>
+        <converter:Bool2InverseConverter x:Key="Bool2REverse"/>
+        <converter:Bool2ReverseVisibilityConverter x:Key="Bool2ReverseVisibility"/>
+        <converter:EcsComm_MQ2VisibilityConverter x:Key="EcsCommTypeMQ2Visibility"/>
+        <converter:EcsComm_OPC2VisibilityConverter x:Key="EcsCommTypeOPC2Visibility"/>
+        <converter:EcsComm_MQ2BoolConverter x:Key="EcsCommTypeMQ2Bool"/>
+        <converter:EcsComm_OPC2BoolConverter x:Key="EcsCommTypeOPC2Bool"/>
+        <converter:Bool2DisplayContentConverter x:Key="Bool2DisplayYesOrNo"/>
+        <converter:MqRpcOnlyOne2BoolConverter x:Key="MqRpcOneType2Bool"/>
+        <converter:MqRpcTypeMultiBlockId2BoolConverter x:Key="MqRpcMultiBlockIdType2Bool"/>
+        <converter:MqRpcTypeMultiCid2BoolConverter x:Key="MqRpcMultiCidType2Bool"/>
+        <converter:ComboxControl2VisibilityConverter x:Key="ComboxCtrl2Visibility"/>
+        <converter:ComboxSelectIndex2BoolConverter x:Key="ComboxIndex2Bool"/>
+        <converter:ComboxSelectText2BoolConverter x:Key="ComboxText2Bool"/>
+        <ObjectDataProvider x:Key="targetTypeEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:ParamTargetType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="paramSourceEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:RequestParamSource" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <WindowChrome x:Key="WIndowChromeKey">
+            <WindowChrome.ResizeBorderThickness>
+                <Thickness>5</Thickness>
+            </WindowChrome.ResizeBorderThickness>
+            <WindowChrome.CaptionHeight>0</WindowChrome.CaptionHeight>
+        </WindowChrome>
+    </Window.Resources>
+    <ScrollViewer>
+        <Grid x:Name="grid" Background="#1f1f1f">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition  Height="80"/>
+            </Grid.RowDefinitions>
+            <!--<DockPanel  Grid.Row="0" Background="Black">
+                <Label HorizontalAlignment="Stretch" DockPanel.Dock="Left" Content="接口编辑" Style="{StaticResource NormalLabel}" />
+                <Button  Grid.Column="1" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource TextButton}"
+                      Foreground="White" Content="&#xf00d;"
+                      Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=NewRpcEditPopupWin}"></Button>
+            </DockPanel>-->
+            <StackPanel  Grid.Row="0" Margin="0" Orientation="Vertical">
+                <GroupBox Header="接口基础信息" Style="{StaticResource NormalGroupBox}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="接口名称" Margin="5,0,5,0"  Style="{StaticResource NormalText}"/>
+                                <controls:TipsLabel   TipName="[rpc_edit]rpc_internal_name" />
+                            </StackPanel>
+                            <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding RequestInternalName}" Width="300" Margin="5,0,30,0"/>
+                            <TextBlock Text="接口描述" Margin="5,0,5,0"  Style="{StaticResource NormalText}"/>
+                            <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding RequestDesc}" Width="300" Margin="5,0,30,0"/>
+                           
+                        </StackPanel>
+                        <StackPanel x:Name="msgTypePanel" Orientation="Horizontal"  Margin="5"
+    Visibility="{Binding EcsComm,Converter={StaticResource EcsCommTypeMQ2Visibility}}">
+                            <TextBlock  Text="msg_type / api url" Margin="5,0,35,0"   Style="{StaticResource NormalText}"/>
+                            <TextBox    Style="{StaticResource NormalTextBox}" Text="{Binding MsgType}" Width="250" Margin="20,0,30,0"/>
+                        </StackPanel>
+                        <StackPanel x:Name="msgTypePanel1" Orientation="Horizontal"  Margin="5"
+     Visibility="{Binding EcsComm,Converter={StaticResource EcsCommTypeOPC2Visibility}}">
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=tagCmdIdIndexValOpcTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                <TextBlock  Text="Index" Margin="5,0,35,0"    Style="{StaticResource NormalText}"/>
+                                <TextBox    Style="{StaticResource NormalTextBox}" Text="{Binding MsgType}" Width="250" Margin="20,0,30,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <TextBlock  Text="弹窗提示设置" Margin="5,0,5,0"  Width="100" Style="{StaticResource NormalText}"></TextBlock>
+                            <CheckBox  IsChecked="{Binding IsSuccessShowTips}"  Content="成功后弹窗提示" Foreground="White" Margin="5,0,15,0"/>
+                            <CheckBox   IsChecked="{Binding IsFailedShowTips}"  Content="失败后弹窗提示" Foreground="White" Margin="5,0,50,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+              
+                <!--<hc:Divider Content="接口参数配置" Foreground="White"/>-->
+                <GroupBox Header="接口参数配置" Style="{StaticResource NormalGroupBox}">
+                    <StackPanel Orientation="Vertical">
+                        <!--opc交互-->
+                        <StackPanel Orientation="Vertical" 
+                        Visibility="{Binding EcsComm,Converter={StaticResource EcsCommTypeOPC2Visibility}}">
+                            <hc:Divider Content="OPC交互配置" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" Width="130" Margin="5,0,5,0" >
+                                    <Label Content="OPC交互类型"     Style="{StaticResource NormalLabel}"/>
+                                    <controls:TipsLabel   TipName="[rpc_edit]opc_comm_type" />
+                                </StackPanel>
+                                <RadioButton x:Name="tagFeedbackOpctypeRadioBtn" IsChecked="{Binding IsWriteSingleTag}" Checked="tagFeedbackOpctypeRadioBtn_Checked"
+                                             Content="写单个点，等待反馈"  Style="{StaticResource NormalRadioButton}"/>
+                                <RadioButton x:Name="tagArgsEventOpcTypeRadioBtn" IsChecked="{Binding IsWriteArgsEventsTag}" Checked="tagArgsEventOpcTypeRadioBtn_Checked"
+                                             Content="写args/event,等待反馈" Style="{StaticResource NormalRadioButton}"  />
+                                <RadioButton x:Name="tagCmdIdIndexValOpcTypeRadioBtn"  IsChecked="{Binding IsWriteCmdIdIndexValueTag}" Checked="tagCmdIdIndexValOpcTypeRadioBtn_Checked"
+                                              Content="写CmdId/Index/Value,等待反馈" Style="{StaticResource NormalRadioButton}"  />
+                            </StackPanel>
+                            <!--tag  tag_feedback-->
+                            <StackPanel Orientation="Vertical" Visibility="{Binding ElementName=tagFeedbackOpctypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                <StackPanel   Orientation="Horizontal" Margin="5">
+                                    <TextBlock   Text="写点" Margin="5,0,5,0" Width="100"  Style="{StaticResource NormalText}"></TextBlock>
+                                    <ComboBox x:Name="opcWriteSingleTagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding RequestTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <!--<ComboBox  Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding RequestTagNameLst}"  Text="{Binding RequestTagInternalName}" SelectedValuePath="Value"  
+                      />-->
+                                    <!--<Label Content="{Binding RequestTagInternalName}" Width="150" 
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                                    
+                                    <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="direct_write_tag" 
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+
+                                    <TextBlock   Text="反馈点" Margin="5,0,5,0" Width="100"  Style="{StaticResource NormalText}"></TextBlock>
+                                    <!--<ComboBox  Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding FeedbackTagNameLst}"  Text="{Binding RequestFeedbackTagInternalName}" SelectedValuePath="Value"  
+                      />-->
+                                    <ComboBox x:Name="opcFeedbackSingleTagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding RequestFeedbackTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <!--<Label Content="{Binding RequestFeedbackTagInternalName}" Width="150" 
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                                    <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="direct_write_tag_feedback" 
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+                                </StackPanel>
+
+                            </StackPanel>
+                            <!--args event return -->
+                            <StackPanel Orientation="Vertical" Visibility="{Binding ElementName=tagArgsEventOpcTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                <StackPanel x:Name="paramSepartorPanel" Orientation="Horizontal" Margin="5">
+                                    <TextBlock  Text="参数分隔符" Margin="5,0,5,0"  Width="100" Style="{StaticResource NormalText}"/>
+                                    <TextBox    Style="{StaticResource NormalTextBox}" Text="{Binding ParamSeperator}" Width="100" Margin="5,0,50,0"/>
+                                    <StackPanel x:Name="eventTagPanel"  Orientation="Horizontal" Margin="5">
+                                        <TextBlock   Text="Event点" Margin="150,0,5,0" Width="100"  Style="{StaticResource NormalText}"></TextBlock>
+                                        <!--<ComboBox  Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding EventTagNameLst}"  Text="{Binding EventTagName}" SelectedValuePath="Value"  
+                      />-->
+                                        <ComboBox x:Name="opcWriteEventTagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding EventTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                        <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <!--<Label Content="{Binding EventTagName}" Width="150"  
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                                    <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="event_tag"  Margin="5,0,50,0"
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+
+                                    </StackPanel>
+
+                                </StackPanel>
+                                <StackPanel x:Name="argsTagPanel" Orientation="Horizontal">
+                                    <TextBlock   Text="参数点" Margin="10,0,5,0"  Width="100" Style="{StaticResource NormalText}"></TextBlock>
+                                    <!--<ComboBox    Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding ArgsTagNameLst}" Text="{Binding ArgsTagName}" SelectedValuePath="Value"  
+                      />-->
+                                    <ComboBox x:Name="opcWriteArgsTagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding ArgsTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <!--<Label Content="{Binding ArgsTagName}" Width="150" 
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                                        <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="args_tag" 
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+                                    <StackPanel x:Name="returnTagPanel"  Orientation="Horizontal">
+                                        <TextBlock   Text="反馈点" Margin="5,0,5,0"  Width="100" Style="{StaticResource NormalText}"></TextBlock>
+                                        <!--<ComboBox   Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding ReturnTagNameLst}" Text="{Binding ReturnTagName}" SelectedValuePath="Value"  
+                      />-->
+                                        <ComboBox x:Name="opcReadFeedbackTagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding ReturnTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                        <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <!--<Label Content="{Binding ReturnTagName}" Width="150" 
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                                        <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="return_tag" 
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel x:Name="returnTagTypePanel"  Orientation="Horizontal" Margin="5">
+                                    <!--<StackPanel Orientation="Horizontal" >
+                                        <TextBlock   Text="参数点类型" Margin="5,0,5,0"  Width="100" Style="{StaticResource NormalText}"></TextBlock>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <RadioButton  IsChecked="{Binding IsReturnIntArray}" Style="{DynamicResource NormalRadioButton}" Content="STRING" Foreground="White" Margin="5,0,15,0"/>
+                                            <RadioButton  IsChecked="{Binding IsReturnLong}" Style="{DynamicResource NormalRadioButton}" Content="INT" Foreground="White" Margin="5,0,15,0"/>
+                                            <RadioButton  IsChecked="{Binding IsReturnLong}" Style="{DynamicResource NormalRadioButton}" Content="BOOL__ARRAY" Foreground="White" Margin="5,0,15,0"/>
+                                        </StackPanel>
+                                    </StackPanel>-->
+                                    <!--<StackPanel Orientation="Horizontal">
+                                        <TextBlock   Text="反馈点类型" Margin="10,0,5,0"  Width="100" Style="{StaticResource NormalText}"></TextBlock>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <RadioButton  IsChecked="{Binding IsReturnIntArray}" Style="{DynamicResource NormalRadioButton}" Content="INT__ARRAY" Foreground="White" Margin="5,0,20,0"/>
+                                            <RadioButton  IsChecked="{Binding IsReturnLong}" Style="{DynamicResource NormalRadioButton}" Content="LONG" Foreground="White" Margin="5,0,15,0"/>
+                                        </StackPanel>
+                                    </StackPanel>-->
+                                </StackPanel>
+
+                            </StackPanel>
+                            <!-- cmdId/Index/Value-->
+                            <StackPanel Orientation="Vertical" Visibility="{Binding ElementName=tagCmdIdIndexValOpcTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                <!--DataView->PLC (cmdId/index/value)-->
+                                <StackPanel x:Name="eventTagPanel1"  Orientation="Horizontal" Margin="5">
+                                    <TextBlock   Text="DataView->PLC" Margin="0,0,5,0" Width="150"  Style="{StaticResource NormalText}"></TextBlock>
+                                    <TextBlock   Text="CommandId" Margin="0,0,5,0" Width="100"  Style="{StaticResource NormalText}"></TextBlock>
+
+                                    <ComboBox x:Name="opcWriteEventTagSelectionCombox1"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdIdTag_Dv2Plc}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+
+                                    <TextBlock   Text="Index" Margin="10,0,5,0"  Width="50" Style="{StaticResource NormalText}"></TextBlock>
+
+                                    <ComboBox x:Name="opcWriteArgsTagSelectionCombox1"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdIndexTag_Dv2Plc}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <StackPanel x:Name="returnTagPanel2"  Orientation="Horizontal">
+                                        <TextBlock   Text="Value" Margin="5,0,5,0"  Width="50" Style="{StaticResource NormalText}"></TextBlock>
+
+                                        <ComboBox x:Name="opcReadFeedbackTagSelectionCombox2"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdValueTag_Dv2Plc}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                        <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                </StackPanel>
+                                <hc:Divider Height="1" Margin="5" BorderBrush="#1f1f1f" ></hc:Divider>
+                                <!--PLC->DataView (cmdId/index/value)-->
+                                <StackPanel x:Name="eventTagPanel2"  Orientation="Horizontal" Margin="5">
+                                    <TextBlock   Text="PLC->DataView" Margin="0,0,5,0" Width="150"  Style="{StaticResource NormalText}"></TextBlock>
+                                    <TextBlock   Text="CommandId" Margin="0,0,5,0" Width="100"  Style="{StaticResource NormalText}"></TextBlock>
+
+                                    <ComboBox x:Name="opcWriteEventTagSelectionCombox2"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdIdTag_Plc2Dv}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <TextBlock   Text="Index" Margin="10,0,5,0"  Width="50" Style="{StaticResource NormalText}"></TextBlock>
+
+                                    <ComboBox x:Name="opcWriteArgsTagSelectionCombox2"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdIndexTag_Plc2Dv}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <StackPanel x:Name="returnTagPanel3"  Orientation="Horizontal">
+                                        <TextBlock   Text="Value" Margin="5,0,5,0"  Width="50" Style="{StaticResource NormalText}"></TextBlock>
+
+                                        <ComboBox x:Name="opcReadFeedbackTagSelectionCombox3"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdValueTag_Plc2Dv}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                        <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!--PLC->DataView (return)-->
+                                <StackPanel x:Name="eventTagPanel3"  Orientation="Horizontal" Margin="5">
+                                    <TextBlock   Text="Return" Margin="155,0,5,0" Width="100"  Style="{StaticResource NormalText}"></TextBlock>
+                                    <ComboBox x:Name="opcWriteEventTagSelectionCombox3"  Width="250" Margin="5,0,10,0" Style="{StaticResource NormalCombox}"
+ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+ SelectedItem="{Binding CmdReturnTag_Plc2Dv}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                      
+                        <!-- 参数编辑-->
+                        <StackPanel Orientation="Vertical">
+                            <Grid Visibility="{Binding ShowParamEditExpander,Converter={StaticResource Bool2Visibility}}" Background="#1f1f1f">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition  Height="80"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel  Grid.Row="0" Grid.Column="0"
+                                     Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <Label Content="参数名称" Width="100"   Style="{StaticResource NormalLabel}"/>
+                                        <TextBox Visibility="{Binding ParamChange,Converter={StaticResource ParamEditOrAdd2Visibility}}"
+                                    Foreground="White" Background="Transparent"    Style="{StaticResource NormalTextBox}" 
+                                            Text="{Binding ParameterInternalName}"  Width="200" Margin="5,0,50,0"/>
+                                        <!--下拉列表 支持同时显示value和描述-->
+                                        <ComboBox  
+                                    
+                                    Visibility="{Binding ParamChange,Converter={StaticResource ParamSelectOther2Visibility}}"
+                                    Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0" HorizontalAlignment="Left"
+                                    ItemsSource="{Binding AllParamLst}"  SelectedItem="{Binding SelectedParam}" >
+                                            <ComboBox.ItemTemplateSelector>
+                                                <controls:ComboBoxItemTemplateSelector>
+                                                    <controls:ComboBoxItemTemplateSelector.SelectedTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding ParamName}"
+                                                              Foreground="White" Style="{StaticResource NormalText }"/>
+                                                        </DataTemplate>
+                                                    </controls:ComboBoxItemTemplateSelector.SelectedTemplate>
+                                                    <controls:ComboBoxItemTemplateSelector.DropDownTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Background="{StaticResource Content.BackGround}">
+                                                                <Border BorderBrush="Gray" BorderThickness="0 0 0 1" Margin="1">
+                                                                    <StackPanel Background="Transparent" Orientation="Vertical" Width="300" HorizontalAlignment="Left" >
+                                                                        <TextBlock Text="{Binding ParamName}" VerticalAlignment="Center"  HorizontalAlignment="Left"  Foreground="White" Style="{StaticResource NormalText }"/>
+                                                                        <Label Content="{Binding ParamDesc}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="-5 0 0 0 " Style="{StaticResource NormalLabel }" Foreground="{StaticResource Global.Gray}"/>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </controls:ComboBoxItemTemplateSelector.DropDownTemplate>
+                                                </controls:ComboBoxItemTemplateSelector>
+                                            </ComboBox.ItemTemplateSelector>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical">                                     
+                                    
+                                    <StackPanel Orientation="Horizontal" Margin="5" Background="Transparent">
+                                        <Label Content="参数信息" Width="100"   Style="{StaticResource NormalLabel}"/>
+                                        <!--<Label Content="描述"    Style="{StaticResource NormalLabel}" Width="120"/>
+                                        <TextBox Foreground="White"  Style="{StaticResource NormalTextBox}"  Background="Transparent"  
+                                            Text="{Binding ParamDesc}" Width="250" Margin="5,0,50,0"/>-->
+                                        <TextBlock Text="{Binding ParamTotalInfo}" Style="{StaticResource TextBlockDefaultThiLight}" Height="auto" LineHeight="25" ></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!--参数内容配置-->
+                                <!--<StackPanel Grid.Row="1" Grid.Column="0" >
+                                    --><!--<Label Content="参数内容配置" Style="{StaticResource  NormalLabel}" HorizontalAlignment="Left"/>--><!--
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <StackPanel Orientation="Horizontal" Width="100">
+                                            <Label Content="参数来源"   Style="{StaticResource NormalLabel}"/>
+                                            <controls:TipsLabel   TipName="[rpc_edit_config]param_source" />
+                                        </StackPanel>
+                                        <ComboBox IsReadOnly="True" x:Name="ParamSourceType" Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,30,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:RequestParamSource}}}"
+                      SelectedValue="{Binding CurParamrSource}" SelectedValuePath="Value"  SelectionChanged="ParamSourceType_SelectionChanged">
+                                            <ComboBox.ItemTemplateSelector>
+                                                <controls:ComboBoxItemTemplateSelector>
+                                                    <controls:ComboBoxItemTemplateSelector.DropDownTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition />
+                                                                    <RowDefinition />
+                                                                </Grid.RowDefinitions>
+                                                                <TextBlock Text="{Binding Value}" Grid.Row="0"/>
+                                                                <TextBlock Text="{Binding Description}" Foreground="{StaticResource Global.Gray}" Grid.Row="1"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </controls:ComboBoxItemTemplateSelector.DropDownTemplate>
+                                                    <controls:ComboBoxItemTemplateSelector.SelectedTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Value}" />
+                                                        </DataTemplate>
+                                                    </controls:ComboBoxItemTemplateSelector.SelectedTemplate>                                                
+                                                </controls:ComboBoxItemTemplateSelector>
+                                            </ComboBox.ItemTemplateSelector>
+                                        </ComboBox>
+
+                                    </StackPanel>
+                                    <StackPanel x:Name="controlNamePanel" Orientation="Horizontal" Margin="5" >
+                                        <StackPanel Orientation="Horizontal" Width="100" >
+                                            <Label Content="控件名称"  Style="{StaticResource NormalLabel}"/>
+                                            <controls:TipsLabel   TipName="[rpc_edit]control_name" />
+                                        </StackPanel>
+                                        --><!--下拉列表 支持同时显示value和描述--><!--
+                                        <ComboBox IsEnabled="False" Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0" HorizontalAlignment="Left"
+                      ItemsSource="{Binding ControlLst}" 
+                        SelectedItem="{Binding SelectedControl}" >
+                                            <ComboBox.ItemTemplateSelector>
+                                                <controls:ComboBoxItemTemplateSelector>
+                                                    <controls:ComboBoxItemTemplateSelector.SelectedTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding dv_control_internal_name}"/>
+                                                        </DataTemplate>
+                                                    </controls:ComboBoxItemTemplateSelector.SelectedTemplate>
+                                                    <controls:ComboBoxItemTemplateSelector.DropDownTemplate>
+                                                        <DataTemplate>
+                                                            <Border  BorderBrush="Gray" BorderThickness="0 0 0 1" Margin="1">
+                                                                <StackPanel  Orientation="Vertical" Background="Transparent"  Width="300" >
+                                                                    <TextBlock Text="{Binding dv_control_internal_name}" VerticalAlignment="Center"  Foreground="White" Style="{StaticResource NormalText }"/>
+                                                                    <Label Content="{Binding dv_control_desc}"  HorizontalAlignment="Left" Margin="-5 0 0 0" VerticalContentAlignment="Center"  Foreground="{StaticResource Global.Gray}" Style="{StaticResource NormalLabel }" />
+
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </controls:ComboBoxItemTemplateSelector.DropDownTemplate>
+                                                </controls:ComboBoxItemTemplateSelector>
+                                            </ComboBox.ItemTemplateSelector>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel x:Name="controlComboxDataSelectPanel">
+                                        <StackPanel  Orientation="Horizontal" Margin="5" Visibility="{Binding SelectedControl,Converter={StaticResource ComboxCtrl2Visibility} }" >
+                                            <StackPanel Orientation="Horizontal" Width="100" >
+                                                <Label Content="数值来源"  Style="{StaticResource NormalLabel}"/>
+                                                <controls:TipsLabel   TipName="[rpc_edit]param_source" />
+                                            </StackPanel>
+                                            <RadioButton  IsEnabled="False" x:Name="SelectIndexRadioBtn" 
+                                 IsChecked="{Binding SelectedControlComboxDataType,Converter={StaticResource ComboxIndex2Bool}}"
+                                 Content="Index"  Style="{StaticResource NormalRadioButton}" Margin="0 0 50 0"/>
+                                            <RadioButton  IsEnabled="False" x:Name="SelectTextRadioBtn" 
+                                  IsChecked="{Binding SelectedControlComboxDataType,Converter={StaticResource ComboxText2Bool}}" 
+                              Content="Text"  Style="{StaticResource NormalRadioButton}"  Margin="0 0 50 0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel x:Name="constValPanel" Orientation="Horizontal"  Margin="5">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"  Width="100">
+                                            <Label Content="常量"  Style="{StaticResource NormalLabel}"/>
+                                            <controls:TipsLabel   TipName="[rpc_edit_config]param_constant" />
+                                        </StackPanel>
+                                        <TextBox  IsReadOnly="True" Style="{StaticResource NormalTextBox}" Text="{Binding ConstValue}" Width="200" Margin="5,0,50,0"/>
+
+                                    </StackPanel>
+                                    <StackPanel x:Name="macroNamePanel" Orientation="Horizontal" Margin="5">
+                                        <Label Content="宏名称" Width="100" Style="{StaticResource NormalLabel}"/>
+                                        <TextBox   IsReadOnly="True" Style="{StaticResource NormalTextBox}" Text="{Binding CurMacroName}" Width="200" Margin="5,0,50,0"/>
+
+                                    </StackPanel>
+                                    <StackPanel x:Name="childParamPanel" Orientation="Horizontal" Margin="5">
+                                        <Label Content="数组内参数" Width="100" Style="{StaticResource NormalLabel}"/>
+                                        <controls:MultiParamCombox x:Name="multiParamCombox" 
+                                ItemsSource="{Binding ParamMultiCheckLst,Mode=TwoWay}"  
+                                                                   ParamIdStr="{Binding ArrayItemsParamStr}"
+                                                           Command="{Binding ParamMultiSelectedChangeCommand}" CommandParameter="{Binding ElementName=multiParamCombox,Path=ParamIdStr}"
+                          
+                           DefaultText=""
+                           Width="280" Height="30" Background="Transparent" Foreground="White" Margin="5,0,50,0"/>
+                                    </StackPanel>
+                                    <StackPanel x:Name="dbSheetNamePanel"  Orientation="Horizontal" Margin="5">
+                                        <Label Content="数据库表" Width="100" Style="{StaticResource NormalLabel}"/>
+                                        <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding CurDbSheetName}" Width="200" Margin="5,0,50,0"/>
+
+                                    </StackPanel>
+                                    <StackPanel x:Name="tagNamePanel"  Orientation="Horizontal" Margin="5">
+                                        <StackPanel Orientation="Horizontal"  Width="100" >
+                                            <Label Content="点名" Style="{StaticResource NormalLabel}"/>
+                                            <controls:TipsLabel   TipName="[rpc_edit]tag_internal_name" />
+                                        </StackPanel>
+                                        <ComboBox  IsReadOnly="True" x:Name="tagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding SelectedTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                        <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        --><!--<Label Content="{Binding TagInternalName}" Width="150" 
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                                        <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="param_tag"  Margin="5,0,50,0"
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>--><!--
+                                    </StackPanel>
+                                    <StackPanel x:Name="tagJsonPathNamePanel"  Orientation="Horizontal" Margin="5">
+                                        <StackPanel Orientation="Horizontal" Width="110">
+                                            <Label Content="JSON Path"   Style="{StaticResource NormalLabel}"/>
+                                            <controls:TipsLabel   TipName="[rpc_edit_config]param_json_path" />
+                                        </StackPanel>
+                                        <TextBox  IsReadOnly="True" Style="{StaticResource NormalTextBox}" Text="{Binding TagJsonPath}" Width="250" Margin="5,0,50,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="1">
+                                    --><!--<Label Content="生成JSON参数配置" Style="{StaticResource  NormalLabel}" HorizontalAlignment="Left"/>--><!--
+                                    <StackPanel x:Name="tagJsonVariableNamePanel"  Orientation="Horizontal" Margin="5">
+                                        <StackPanel Orientation="Horizontal"  Width="120">
+                                            <Label Content="JSON字段名"  Style="{StaticResource NormalLabel}"/>
+                                            <controls:TipsLabel  TipName="[rpc_edit]json_filed_name(mq)" />
+                                        </StackPanel>
+                                        <TextBox  IsReadOnly="True" Style="{StaticResource NormalTextBox}" Text="{Binding ParamJsonVariableName}" Width="250" Margin="5,0,50,0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <Label Content="参数值类型"  Style="{StaticResource NormalLabel}" Width="120"/>
+                                        <ComboBox  IsReadOnly="True" Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:ParamTargetType}}}"
+                      DisplayMemberPath="Value"  Text="{Binding CurParamTargetType}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="5" Visibility="{Binding IsTranslateOrMap,Converter={StaticResource Bool2Visibility}}">
+                                        <StackPanel Orientation="Horizontal"  Width="120">
+                                            <Label Content="参数值转换"  Style="{StaticResource NormalLabel}" />
+                                            <controls:TipsLabel  TipName="[rpc_edit]value_translate_expression" />
+                                        </StackPanel>
+                                        <TextBox  IsReadOnly="True" Style="{StaticResource NormalTextBox}" Text="{Binding ParamExpressionStr}" Width="250" Margin="5,0,50,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox x:Name="ParamCheckBox" IsChecked="{Binding IsCheckParamValidation}"  Content="参数校验" Foreground="White" />
+                                        <controls:TipsLabel   TipName="[rpc_edit_config]param_validation_checkbox" />
+                                    </StackPanel>
+                                    <Button Visibility="{Binding ElementName=ParamCheckBox,Path=IsChecked,Converter={StaticResource Bool2Visibility}}" Content="&#xf067;" ToolTip="Add"  VerticalAlignment="Center" Margin="0 0 0 0"
+                                        Command="{Binding AddNewParamValidationCommand}" 
+                                        Style="{StaticResource ImageButton}" />
+                                    <ItemsControl ItemsSource="{Binding SelectedParamValidationRuleLst}"
+                                                  Visibility="{Binding ElementName=ParamCheckBox,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate >
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Content="移除" Command="{Binding  RelativeSource= {RelativeSource AncestorType=ItemsControl},Path=DataContext.RemoveParamValidationCommand}" 
+                                            CommandParameter="{Binding validation_type_id}" ToolTip="保存后生效"
+                                            Width="50" Style="{StaticResource NormalButton}"/>
+                                                    <Label Content="校验规则"  Style="{StaticResource NormalLabel}"/>
+                                                    <ComboBox  IsReadOnly="True" Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,10,0"
+                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ParamValidationRuleLst}"
+                      DisplayMemberPath="RuleDesc" SelectedValue="{Binding validation_type_id}" SelectedValuePath="RuleID"/>
+                                                    <StackPanel Orientation="Horizontal"  Width="120">
+                                                        <Label Content="校验失败弹窗"  Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[rpc_edit_config]param_invalid_tips_selection" />
+                                                    </StackPanel>
+                                                    --><!--<ComboBox Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=DataContext.DvTipsLst}"
+                      DisplayMemberPath="tips_zh" SelectedValue="{Binding invalid_tips_internal_name}" SelectedValuePath="tips_internal_name"/>--><!--
+                                                    <ComboBox  IsReadOnly="True" x:Name="paramInvalidTipsCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                       ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=DataContext.DvTipsLst}"
+                                                              IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                        SelectedValue="{Binding invalid_tips_internal_name}" SelectedValuePath="tips_internal_name"
+                                                              TextSearch.TextPath="tips_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                                        <ComboBox.ItemTemplate>
+                                                            <DataTemplate >
+                                                                <StackPanel>
+                                                                    <TextBlock Margin="0 3 0 5" Text="{Binding tips_internal_name}" FontWeight="Bold" />
+                                                                    <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tips_zh}" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ComboBox.ItemTemplate>
+                                                    </ComboBox>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>-->
+                                <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" >
+                                   
+                                    <!--<Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamSelectOther2Visibility}}"
+                                Content="确认修改该参数" Background="#4c4c4c" Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmChangeParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>-->
+                                    <!--<Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamSelectOther2Visibility}}"
+                                Content="确认删除" Background="Red" Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmDeleteParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>
+                                    <Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamSelectOther2Visibility}}"
+                                Content="确认修改"  Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmChangeParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>
+                                    <Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamEditExist2Visibility}}"
+                                Content="确认修改"  Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmChangeParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>-->
+                                    <Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamSelectOther2Visibility}}"
+                                Content="确认选择"  Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmSelectParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>
+                                    <!--<Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamAddNew2Visibility}}"
+                                Content="确认添加并选择参数"  Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmAddParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>-->
+                                    <!--<Button  Visibility="{Binding ParamChange,Converter={StaticResource ParamEditExist2Visibility}}"
+                                Content="保存" Background="#4c4c4c" Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding SaveEditParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>-->
+
+                                    <Button  Content="取消" Background="#4c4c4c" Width="150"  Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                      Command="{Binding CancelAddParameterCommand}" CommandParameter="{Binding ElementName=ParamterEditPopupWin}"></Button>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="参数列表" Style="{StaticResource NormalLabel}"/>
+                                <Button Content="选择参数"  Width="120"
+                                        Command="{Binding SelectRpcParamCommand}" 
+                                        Style="{StaticResource NormalButton}"  >
+                                </Button>
+                                <!--<Button Content="添加新参数" Width="120"
+                                        Command="{Binding AddNewRpcParamCommand}" 
+                                        Style="{StaticResource NormalButton}"  >
+                                </Button>-->
+                            </StackPanel>
+                            <DataGrid  Margin="5" FontSize="{StaticResource NormalFontSize}" ItemsSource="{Binding DisplayParamLst}"  AutoGenerateColumns="False" CanUserAddRows="False"  >
+                                <DataGrid.Resources>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="FontSize" Value="15"/>
+                                        <Style.Resources>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+
+                                        </Style.Resources>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <!--<Setter Property="Foreground" Value="Red"/>-->
+                                                <Setter Property="Background" Value="#434041"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.Resources>
+                                <DataGrid.RowStyle >
+                                    <Style TargetType="{x:Type DataGridRow}">
+                                        <Setter Property="Height" Value="35" />
+                                        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="true">
+                                                <Setter Property="Background" Value="#0078d7"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="false">
+                                                <Setter Property="Background" Value="#1f1f1f"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="操作" Width="120">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="编辑" Width="60" Style="{StaticResource NormalButton}"  Command="{Binding DataContext.EditRpcParamCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                    <Button Content="移除" Width="60" Style="{StaticResource NormalButton}"  Command="{Binding DataContext.RemoveSelectedRpcParamCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <!--<DataGridCheckBoxColumn Header="选择"  Binding="{Binding IsSelected}">                        
+                    </DataGridCheckBoxColumn>-->
+                                    <!--<DataGridTemplateColumn Header="选择">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Height="35" Width="35" IsChecked="{Binding Path=IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>-->
+                                    <!--<DataGridTextColumn IsReadOnly="True" Header="序号" Binding="{Binding Id}"/>-->
+                                    <DataGridTextColumn IsReadOnly="True" Width="*" Header="参数名称" Binding="{Binding ParamName}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}"/>
+                                    <DataGridTextColumn IsReadOnly="True" Width="*" Header="参数描述" Binding="{Binding ParamDesc}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}"/>
+                                    <DataGridTextColumn IsReadOnly="True" Width="*" Header="参数来源" Binding="{Binding ParamSource}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}"/>
+                                    <!--<DataGridTemplateColumn IsReadOnly="True" Header="参数来源">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox SelectedItem="{Binding Path=ParamSource}" 
+                                          ItemsSource="{Binding Source={StaticResource paramSourceEnum}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>-->
+                                    <DataGridTextColumn IsReadOnly="True" Width="*" Header="参数JSON字段名称" Binding="{Binding JsonVariableName}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}"/>
+
+                                    <!--<DataGridTemplateColumn Header="参数目标值类型">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox SelectedItem="{Binding Path=TargetValType}" 
+                                          ItemsSource="{Binding Source={StaticResource targetTypeEnum}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="控件内部名称" Binding="{Binding ParamInternalName}"/>
+                    <DataGridTextColumn Header="常量值" Binding="{Binding ConstValue}"/>
+                    <DataGridTextColumn Header="点名（内部）" Binding="{Binding TagInternalName}"/>
+                    <DataGridTextColumn Header="点名JSON_Path" Binding="{Binding TagValueJsonPath}"/>
+                    <DataGridTextColumn Header="控件内部名称" Binding="{Binding ControlInternalName}"/>
+                    <DataGridTextColumn Header="宏名称" Binding="{Binding MacroName}"/>
+                    <DataGridTextColumn Header="数组参数列表" Binding="{Binding ArrayParamIdLst}"/>
+                    <DataGridTextColumn Header="拼接参数列表" Binding="{Binding SpliceParamIdLst}"/>
+                    <DataGridTextColumn Header="嵌套参数列表" Binding="{Binding ChildrenParamId}"/>
+                    <DataGridTextColumn Header="数据库表名" Binding="{Binding DbSheetName}"/>-->
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox  Style="{StaticResource NormalGroupBox}"  Visibility="{Binding IsCommReturnVal,Converter={StaticResource Bool2ReverseVisibility}}">
+                    <StackPanel x:Name="requestReturnPanel" Orientation="Vertical">
+                        <StackPanel  x:Name="SpecialReturnValPanel" Margin="5" Orientation="Vertical"
+                         Visibility="{Binding IsCommReturnVal,Converter={StaticResource Bool2ReverseVisibility}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="自定义返回值" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                <Button Content="添加"   Width="100" Height="25" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding AddNewReturnValCommand}" CommandParameter=""></Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5"
+                                                Visibility="{Binding ShowCommonValEditOrAdd,Converter={StaticResource Bool2Visibility}}">
+                                <Label Content="返回值"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                <TextBox Text="{Binding ReturnValue}" Width="50" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                <Label Content="请求成功返回值"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                <CheckBox  IsChecked="{Binding ReturnValueSuccessFlag}" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalCheckBox}"/>
+
+                                <Label Content="中文描述"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                <TextBox Text="{Binding ReturnValueDescZh}" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                <Label Content="英文描述"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                <TextBox Text="{Binding ReturnValueDescEn}" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                <Button Content="确认"  Width="100" Height="25"  Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmAddOrEditReturnValCommand}" CommandParameter=""></Button>
+                            </StackPanel>
+                            <DataGrid ItemsSource="{Binding Path=ReturnValueLst}"
+                                           RowHeight="25" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                           AutoGenerateColumns="False"    CanUserAddRows="False"  VerticalScrollBarVisibility="Auto" MaxHeight="250">
+                                <DataGrid.Resources>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="FontSize" Value="15"/>
+                                        <Style.Resources>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+                                        </Style.Resources>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <!--<Setter Property="Foreground" Value="Red"/>-->
+                                                <Setter Property="Background" Value="#434041"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.Resources>
+
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="操作" Width="120">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="编辑" Width="60" Style="{StaticResource NormalButton}"  Command="{Binding DataContext.EditReturnValCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                    <Button Content="删除" Width="60" Style="{StaticResource NormalButton}"  Command="{Binding DataContext.DeleteReturnValCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="成功返回值" Width="100" Binding="{Binding is_success_flag,Converter={StaticResource Bool2DisplayYesOrNo}}">
+
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn    Width="50" Binding="{Binding Path=return_value}" Header="返回值">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style>
+                                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="中文描述" Width="*" Binding="{Binding Path=return_desc_zh}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}">
+
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="英文描述" Width="*" Binding="{Binding Path=return_desc_en}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}">
+
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
+                <Button Content="确认"  Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmCommand}" CommandParameter="{Binding ElementName=NewRpcEditPopupWin}"></Button>
+                <Button  Content="取消" Background="#4c4c4c" Width="150"  Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                      Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=NewRpcEditPopupWin}"></Button>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>

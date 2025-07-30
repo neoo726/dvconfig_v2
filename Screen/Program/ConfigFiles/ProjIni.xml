@@ -1,0 +1,12 @@
+﻿<Config>
+  <!--Current Rcs ID-->
+  <RCSNO>1</RCSNO>
+  <!--Database type only can use the following value:SqlServer,mysql,sqlite -->
+  <DatabaseType>sqlite</DatabaseType>
+  <!-- For SQL Server username/password: Data Source=ip address;Initial Catalog=RCMSDB;User ID=cms;Password=zpmc;-->
+  <!-- For MYSQL: Data Source=117.50.186.229;Initial Catalog=dataview_template_dev;User ID=root;Password=Zpmc@3261;-->
+  <!-- For SQL Server Express: Data Source=.\SQLEXPRESS;Initial Catalog=RCMSDB;Integrated Security=SSPI;-->
+  <!-- For SQLite: Data Source=D:\Database\CMSDB.db;Version=3;-->
+  <!-- <ConnectingString></ConnectingString> -->
+  <ConnectingString>Data Source=10.128.254.130;Initial Catalog=dataview_template_dev;User ID=root;Password=Zpmc@3261</ConnectingString>
+</Config>

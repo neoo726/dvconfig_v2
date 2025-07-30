@@ -1,0 +1,239 @@
+﻿<Window  
+     x:Name="NewFanoutEditPopupWin" 
+    x:Class="DataViewConfig.Pages.Popups.NewFanoutEditPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataViewConfig.Pages.Popups"
+         xmlns:controls="clr-namespace:DataViewConfig.Controls"
+        xmlns:converter="clr-namespace:DataViewConfig.Converters" 
+     xmlns:current="clr-namespace:DataViewConfig"
+        xmlns:vm="clr-namespace:DataViewConfig.ViewModels" 
+        xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:hc="https://handyorg.github.io/handycontrol" 
+        d:DataContext="{d:DesignInstance Type=vm:NewFanoutEditPopupViewModel}"
+        mc:Ignorable="d"
+        Height="550" Width="950" 
+        Foreground="White"
+        WindowStartupLocation="CenterScreen" 
+        Background="{StaticResource NormalBackGround}" FontSize="{StaticResource NormalFontSize}"
+        ResizeMode="NoResize" Title="状态接口编辑(Fanout广播/Redis轮询)"  SizeToContent="WidthAndHeight"
+         FontFamily="pack://application:,,,/DataViewConfig;component/Fonts/fontawesome-webfont.ttf#FontAwesome">
+<Window.Resources>
+        <converter:Bool2VisibilityConverter x:Key="Bool2Visibility"/>
+        <converter:Bool2ReverseVisibilityConverter x:Key="Bool2ReverseVisibility"/>
+        <converter:EcsComm_Int2FanoutTitleStringConverter x:Key="EcsCommTypeInt2FanoutTitle"/>
+        <converter:ReceiveWrite_Normal2BoolConverter x:Key="WriteNormarlTag2Bool"/>
+        <converter:ReceiveWrite_Condition2BoolConverter x:Key="WriteConditionTag2Bool"/>
+        <converter:ReceiveWrite_Normal2VisibilityConverter x:Key="WriteNormarlTag2Visibility"/>
+        <converter:ReceiveWrite_Condition2VisibilityConverter x:Key="WriteConditionTag2Visibility"/>
+        <converter:EcsComm_MQ2BoolConverter x:Key="EcsCommTypeMQ2Bool"/>
+        <converter:EcsComm_OPC2BoolConverter x:Key="EcsCommTypeOPC2Bool"/>
+        <converter:MqRpcOnlyOne2BoolConverter x:Key="MqRpcOneType2Bool"/>
+        <converter:MqRpcTypeMultiBlockId2BoolConverter x:Key="MqRpcMultiBlockIdType2Bool"/>
+        <converter:MqRpcTypeMultiCid2BoolConverter x:Key="MqRpcMultiCidType2Bool"/>
+        <ObjectDataProvider x:Key="targetTypeEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:ParamTargetType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="paramSourceEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:RequestParamSource" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <WindowChrome x:Key="WIndowChromeKey">
+            <WindowChrome.ResizeBorderThickness>
+                <Thickness>5</Thickness>
+            </WindowChrome.ResizeBorderThickness>
+            <WindowChrome.CaptionHeight>0</WindowChrome.CaptionHeight>
+        </WindowChrome>
+    </Window.Resources>
+    <Grid x:Name="grid" Background="#1f1f1f">
+        <Grid.RowDefinitions>
+          
+            <RowDefinition />
+            <RowDefinition  Height="80"/>
+        </Grid.RowDefinitions>
+        <!--<DockPanel  Grid.Row="0" Background="Black">
+            <Label HorizontalAlignment="Left" DockPanel.Dock="Left" Content="Fanout接口编辑" Style="{StaticResource NormalLabel}"/>
+            --><!--<Button  Grid.Column="1" DockPanel.Dock="Right" HorizontalAlignment="Right" Style="{StaticResource TextButton}"
+                      Foreground="White" Content="&#xf00d;"
+                      Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=FanoutEditPopupWin}"></Button>--><!--
+        </DockPanel>-->
+        <StackPanel  Grid.Row="0" Margin="5" Orientation="Vertical">
+            <StackPanel  Orientation="Horizontal" Margin="5">
+                <TextBlock Text="接口名称" Margin="5,0,5,0" Width="150"  Style="{StaticResource NormalText}"/>
+                <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding FanoutName}" Width="250" Margin="5,0,30,0"/>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal" Margin="5">
+                <TextBlock Text="描述" Margin="5,0,5,0" Width="150"  Style="{StaticResource NormalText}"/>
+                <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding FanoutDesc}" Width="250" Margin="5,0,30,0"/>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal" Margin="5" Visibility="{Binding ShowRedisConfigs,Converter={StaticResource Bool2Visibility}}">
+                <TextBlock Text="Redis Key" Margin="5,0,5,0" Width="150"  Style="{StaticResource NormalText}"/>
+                <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding RedisKey}" Width="250" Margin="5,0,30,0"/>
+            </StackPanel>
+            <!--<StackPanel  Orientation="Horizontal" Margin="5"  Visibility="{Binding ShowRestConfigs,Converter={StaticResource Bool2Visibility}}">
+                <TextBlock Text="轮询周期" Margin="5,0,5,0" Width="150"  Style="{StaticResource NormalText}"/>
+                <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding RestPollingInterval}" Width="250" Margin="5,0,30,0"/>
+            </StackPanel>-->
+            <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Top" Visibility="{Binding ShowRedisConfigs,Converter={StaticResource Bool2ReverseVisibility}}">
+                <TextBlock Text="JSON解析配置"  Width="150"  VerticalAlignment="Top" Margin="5,10,5,0" Style="{StaticResource NormalText}"/>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal"  Margin="5">
+                        <StackPanel Orientation="Horizontal"  Width="180"  Margin="5,0,5,0">
+                            <TextBlock Text="msg_type"   Style="{StaticResource NormalText}"/>
+                            <controls:TipsLabel   TipName="[fanout_edit]msg_type" />
+                        </StackPanel>
+                        <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding MsgType}" Width="200"  Margin="5,0,5,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  Margin="5">
+                        <StackPanel Orientation="Horizontal"  Width="180"  Margin="5,0,5,0">
+                            <TextBlock Text="对象类型"  Style="{StaticResource NormalText}"/>
+                            <controls:TipsLabel   TipName="[fanout_edit]msg_target_type" />
+                        </StackPanel>
+                        <ComboBox Style="{DynamicResource NormalCombox}" Width="200" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:DvReceiveTypeEnum}}}"
+                      DisplayMemberPath="Value"  Text="{Binding StrReceiveType}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  Margin="5">
+                        <StackPanel Orientation="Horizontal" Width="180"  Margin="5,0,5,0">
+                            <TextBlock Text="设备/操作台区分字段"   Style="{StaticResource NormalText}"/>
+                            <controls:TipsLabel   TipName="[fanout_edit]crane_rcs_identify_filed_name" />
+                        </StackPanel>
+                        <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding DeviceField}" Width="200"  Margin="5,0,5,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!--选择Redis后，只能直接选待写入的点名，不支持条件判断-->
+            <StackPanel Orientation="Horizontal" Margin="5"  Visibility="{Binding ShowRedisConfigs,Converter={StaticResource Bool2Visibility}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="写入点名"  Margin="5"   VerticalAlignment="Top"   Style="{StaticResource NormalText}"/>
+                    <controls:TipsLabel   TipName="[fanout_edit]direct_write_tag" />
+                </StackPanel>
+                <ComboBox x:Name="WriteMemTagSelectionCombox1"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding WriteTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5" Visibility="{Binding ShowRedisConfigs,Converter={StaticResource Bool2ReverseVisibility}}">
+                <TextBlock Text="数据存储配置"  Margin="5,0,5,0"  Width="150"  VerticalAlignment="Top" Style="{StaticResource NormalText}"/>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+                    <!--选择数据存储方式-->
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <RadioButton x:Name="directWriteTagRadioBtn"
+                                 IsChecked="{Binding ReceiveWriteType,Converter={StaticResource WriteNormarlTag2Bool}}"
+                                 Content="直接写入Memory点"  Style="{StaticResource NormalRadioButton}"/>
+                        <controls:TipsLabel   TipName="[fanout_edit]direct_write_memory_tag" />
+                        <RadioButton x:Name="dependsOnCondiitonRadioBtn"
+                                  IsChecked="{Binding ReceiveWriteType,Converter={StaticResource WriteConditionTag2Bool}}" 
+                              Content="根据不同条件写入不同的Memory点"  Style="{StaticResource NormalRadioButton}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal " Margin="5"  Visibility="{Binding ReceiveWriteType,Converter={StaticResource WriteNormarlTag2Visibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="写入点名"  Margin="5"   VerticalAlignment="Top"   Style="{StaticResource NormalText}"/>
+                            <controls:TipsLabel   TipName="[fanout_edit]direct_write_tag" />
+                        </StackPanel>
+                        <!--<ComboBox
+                         Foreground="White" Background="Transparent" Width="300" HorizontalAlignment="Left"  Margin="5"
+                        Style="{DynamicResource NormalCombox}" 
+                      ItemsSource="{Binding TagNameLst}"
+                        Text="{Binding TagInternalName}"/>-->
+                        <ComboBox x:Name="WriteMemTagSelectionCombox"  Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding WriteTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                        <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <!--<Label Content="{Binding DirectTagInternalName}" Width="150"  Margin="5"
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>
+                        <Button Content="选择" Command="{Binding SelectTagCommand}" CommandParameter="direct_write_tag" 
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+
+                    </StackPanel>
+                    <!--<hc:ComboBox 
+                        Visibility="{Binding ReceiveWriteType,Converter={StaticResource WriteNormarlTag2Visibility}}"
+                    hc:TitleElement.Title="写入点名" hc:TitleElement.TitlePlacement="Left" 
+                    Foreground="White" Background="Transparent" Width="300" HorizontalAlignment="Left"  Margin="5"/>-->
+                    <StackPanel Orientation="Vertical"  Visibility="{Binding ReceiveWriteType,Converter={StaticResource WriteConditionTag2Visibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="+" Command="{Binding AddNewConditionCommand}"  Style="{StaticResource NormalButton}" Foreground="White" Width="50"/>
+                            <Label Content="添加条件"  Style="{StaticResource NormalLabel}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <ItemsControl x:Name="conditionItems" ItemsSource="{Binding  ConditionMatchTagLst,NotifyOnSourceUpdated=True}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="移除" Command="{Binding  RelativeSource= {RelativeSource AncestorType=ItemsControl},Path=DataContext.DeleteConditionCommand}" 
+                                            CommandParameter="{Binding}"
+                                            Width="50" Style="{StaticResource NormalButton}"/>
+                                            <hc:TextBox Text="{Binding FieldName}"  BorderBrush="White"
+                                                        hc:TitleElement.Title="字段名" hc:TitleElement.TitlePlacement="Left" Width="200" 
+                                                        Foreground="White" Background="Transparent" Height="30"/>
+                                            <hc:TextBox Text="{Binding FieldValue}"  BorderBrush="White" Margin="5 0 0 0"
+                                                        hc:TitleElement.Title="条件值" hc:TitleElement.TitlePlacement="Left" Width="150"
+                                                         Foreground="White" Background="Transparent" Height="30"/>
+                                            <StackPanel Orientation="Horizontal " Margin="5"  >
+                                                <TextBlock Text="写入点名"  Margin="5"   VerticalAlignment="Center"   Style="{StaticResource NormalText}"/>
+                                                <controls:TipsLabel   TipName="[fanout_edit]condition_write_tag" />
+                                                <!--<ComboBox
+                         Foreground="White" Background="Transparent" Width="300" HorizontalAlignment="Left"  Margin="5"
+                        Style="{DynamicResource NormalCombox}" 
+                      ItemsSource="{Binding ElementName=NewFanoutEditPopupWin,Path=DataContext.TagNameLst}"
+                        Text="{Binding TargetTagInternalName}"/>-->
+                                                <ComboBox   Width="250" Margin="5,0,50,0" Style="{StaticResource NormalCombox}"
+                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.TagLst}" IsEditable="True" IsTextSearchEnabled="True" IsTextSearchCaseSensitive="True"
+                       SelectedItem="{Binding TargetTag}" TextSearch.TextPath="tag_internal_name"   BorderBrush="White" Background="Black" TextBoxBase.TextChanged="ComboBox_TextChanged">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                                <TextBlock Margin="0 3 0 5" Text="{Binding tag_internal_name}" FontWeight="Bold" />
+                                                                <TextBlock Foreground="{StaticResource Global.Gray}" Text="{Binding tag_desc}" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                                <!--<Label Content="{Binding TargetTagInternalName}" Width="150"  Margin="5"
+                                   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{StaticResource UnderlineLabel}" BorderThickness=" 0 0 0 1" BorderBrush="Gray"/>-->
+                                                <!--<Button Content="选择" 
+                                                        Command="{Binding DataContext.SelectConditionWriteTagCommand,ElementName=conditionItems}"
+                                                        CommandParameter="{Binding Id}" 
+                                    Style="{StaticResource TextButton}" BorderBrush="Transparent" Foreground="#7098c5"  BorderThickness="0"/>-->
+
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            
+        <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
+            <Button Content="确认"  Width="150" Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmCommand}" CommandParameter="{Binding ElementName=NewFanoutEditPopupWin}"></Button>
+            <Button  Content="取消" Background="#4c4c4c" Width="150"  Height="35" Margin="10" Style="{StaticResource NormalButton}"
+                      Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=NewFanoutEditPopupWin}"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

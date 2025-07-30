@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="DataViewConfig.Controls.NewParameter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataViewConfig.Controls"
+             xmlns:current="clr-namespace:DataViewConfig"
+             xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="1290"
+             
+             Foreground="White">
+    <UserControl.Resources>
+        
+        
+    </UserControl.Resources>
+   
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <!--第一行-->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Label Content="参数名称" Margin="5,0,5,0" MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <TextBox Style="{StaticResource NormalTextBox}" Width="200" Margin="5,0,50,0"/>
+
+            <Label Content="参数来源"  Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <ComboBox Style="{DynamicResource NormalCombox}" Width="100" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:RequestParamSource}}}"
+                      DisplayMemberPath="Description"  />
+
+            <Label Content="控件名称"  Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <ComboBox Style="{DynamicResource NormalCombox}" Width="100" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:TagDataType}}}"
+                      DisplayMemberPath="Description"  />    
+
+            <Label Content="常量" Margin="5,0,5,0" Style="{StaticResource NormalLabel}"/>
+            <TextBox Style="{StaticResource NormalTextBox}" Width="250" Margin="5,0,50,0"/>
+
+            <Label Content="参数值点名"  Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <ComboBox Style="{DynamicResource NormalCombox}" Width="100" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:TagDataType}}}"
+                      DisplayMemberPath="Description"  />
+            
+            <Label Content="参数值点名Json Path" Margin="5,0,5,0" Style="{StaticResource NormalLabel}"/>
+            <TextBox Style="{StaticResource NormalTextBox}" Width="250" Margin="5,0,50,0"/>
+
+        </StackPanel>
+        <!--第二行-->
+        <StackPanel Grid.Row="1" Orientation="Horizontal"  Margin="5">
+            <Label Content="JSON字段名(交互方式为MQ时生效）" Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <TextBox Style="{StaticResource NormalTextBox}" Width="200" Margin="5,0,50,0"/>
+
+            <Label Content="参数值的目标类型" Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <ComboBox Style="{DynamicResource NormalCombox}" Width="100" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:ParamTargetType}}}"
+                      DisplayMemberPath="Description"  />
+        </StackPanel>
+        <!--第三行-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="添加" Style="{DynamicResource NormalButton}" Width="150"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

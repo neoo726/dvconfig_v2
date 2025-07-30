@@ -1,0 +1,917 @@
+﻿<UserControl x:Class="DataViewConfig.Pages.InteractiveSystemConfigPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataViewConfig.Pages"
+             xmlns:controls="clr-namespace:DataViewConfig.Controls"
+             xmlns:converter="clr-namespace:DataViewConfig.Converters" 
+             xmlns:vm="clr-namespace:DataViewConfig.ViewModels" 
+             xmlns:current="clr-namespace:DataViewConfig"
+             xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:hc="https://handyorg.github.io/handycontrol" d:DataContext="{d:DesignInstance Type=vm:InteractiveSystemConfigPageViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="736" d:DesignWidth="1296"  BorderBrush="Transparent" BorderThickness="1"
+             Background="{StaticResource Content.BackGround}" Foreground="White" FontSize="15"
+             Margin="5">
+    <UserControl.Resources>
+        <converter:Bool2InverseConverter x:Key="Bool2Reverse"/>
+        <converter:Bool2VisibilityConverter x:Key="Bool2Visibility"/>
+        <converter:Bool2ReverseVisibilityConverter x:Key="Bool2ReverseVisibility"/>
+        <converter:EcsComm_MQ2BoolConverter x:Key="EcsCommTypeMQ2Bool"/>
+        <converter:EcsComm_OPC2BoolConverter x:Key="EcsCommTypeOPC2Bool"/>
+        <converter:EcsComm_Rest2BoolConverter x:Key="EcsCommTypeRest2Bool"/>
+        <converter:EcsComm_Redis2BoolConverter x:Key="EcsCommTypeRedis2Bool"/>
+        <converter:EcsComm_Int2FanoutTitleStringConverter x:Key="EcsCommTypeInt2FanoutTitle"/>
+        <converter:MqRpcOnlyOne2BoolConverter x:Key="MqRpcOneType2Bool"/>
+        <converter:Bool2DisplayContentConverter x:Key="Bool2DisplayYesOrNo"/>
+        <converter:MqRpcTypeMultiBlockId2BoolConverter x:Key="MqRpcMultiBlockIdType2Bool"/>
+        <converter:MqRpcTypeMultiCid2BoolConverter x:Key="MqRpcMultiCidType2Bool"/>
+        <converter:MqRpcTypeMultiBlockId2VisibilityConverter x:Key="MqRpcMultiBlockIdType2Visible"/>
+        <converter:MqRpcTypeMultiCid2VisibilityConverter x:Key="MqRpcMultiCidType2Visibility"/>
+        <ObjectDataProvider x:Key="targetTypeEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:ParamTargetType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="paramSourceEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:RequestParamSource" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <DiscreteObjectKeyFrame  x:Key="ShowOpcColumns" Value="{Binding ElementName=OPCCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}"/>
+        <DiscreteObjectKeyFrame  x:Key="ShowMqColumns" Value="{Binding ElementName=MQCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}"/>
+        <DiscreteObjectKeyFrame  x:Key="ShowReturnValueColumns" Value="{Binding ElementName=globalReturnRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}"/>
+        <DiscreteObjectKeyFrame  x:Key="HideUnRedisColumns" Value="{Binding ElementName=RestCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}"/>
+        <DiscreteObjectKeyFrame  x:Key="ShowRedisColumns" Value="{Binding ElementName=RestCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}"/>
+        <!--<Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="White"/>
+        </Style>-->
+        <Style TargetType="DataGridCell">
+            <Setter Property="FontSize" Value="15"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+            </Style.Resources>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <!--<Setter Property="Foreground" Value="Red"/>-->
+                    <Setter Property="Background" Value="#004696"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" >
+        <StackPanel Orientation="Horizontal"  Background="{StaticResource Content.Topbar.BackGround}" Margin="5">
+            <TextBlock Text="{Binding EcsName}" Style="{StaticResource NormalText}" FontSize="18" FontWeight="Bold" Margin="10"/>
+          
+            <!--<CheckBox x:Name="isCommEnableChkbox" IsChecked="{Binding CommEnable}" Content="启用" Width="150" Margin="20 0 0 0" VerticalContentAlignment="Center" Foreground="White"/>-->
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <StackPanel Orientation="Vertical">
+                <!--添加接口-->
+                <hc:Divider  Content="基础信息" LineStroke="#393939" Foreground="White"/>
+                <Expander  x:Name="BaseInfoExpander" Expanded="Expander_Expanded"    IsExpanded="{Binding AutoExpandedBaseInfo}"
+                        Header="基础信息(点击展开）"  Background="{StaticResource  Content.Topbar.BackGround}" Foreground="White" Margin="0 5 0 0" 
+                               BorderBrush="{StaticResource Content.Expander.Border}"  BorderThickness="1" >
+                    <ScrollViewer VerticalScrollBarVisibility="Visible"  Height="500">
+                        <Border BorderBrush="{StaticResource Content.Expander.Border}" BorderThickness="1" Padding="5" >
+                            <StackPanel Orientation="Vertical" >
+                                <StackPanel Orientation="Horizontal"  Background="{StaticResource Content.Topbar.BackGround}" Margin="5">
+                                    <TextBlock Text="对象名称" Style="{StaticResource NormalText}" FontSize="18" FontWeight="Bold" Margin="10"/>
+                                    <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                    <TextBox Width="250" IsEnabled="{Binding IsPermanent,Converter={StaticResource Bool2Reverse}}" Text="{Binding EcsName}" Style="{StaticResource NormalTextBox}"  CaretBrush="White" Background="Transparent"   Foreground="White"/>
+                                    <TextBlock Text="对象描述" Style="{StaticResource NormalText}" Margin="10"/>
+                                    <TextBox Width="250" Text="{Binding EcsDesc}" Style="{StaticResource NormalTextBox}" CaretBrush="White"  Background="Transparent"  Foreground="White"/>
+                                    <CheckBox x:Name="isCommEnableChkbox" IsChecked="{Binding CommEnable}" Content="启用" Margin="20 0 0 0" VerticalContentAlignment="Center" Foreground="White"/>
+                                    <controls:TipsLabel   TipName="[interactive_config]exsystem_enable" />
+                                </StackPanel>
+                                <GroupBox Header="通讯类型" BorderBrush="Transparent"  Style="{StaticResource NormalGroupBox}">
+                                    <StackPanel Orientation="Horizontal" Margin="50 5 0 5"  >
+                                        <!--<Label Content="通讯类型" HorizontalContentAlignment="Left" Width="150" Style="{StaticResource NormalLabel}" />-->
+                                        <RadioButton x:Name="MQCommTypeRadioBtn"  IsEnabled="{Binding IsShowItem}"
+                                 IsChecked="{Binding ECSComm,Converter={StaticResource EcsCommTypeMQ2Bool}}"
+                                 Content="RabbitMQ"  Style="{StaticResource NormalRadioButton}" Margin="0 0 50 0"/>
+                                        <RadioButton x:Name="OPCCommTypeRadioBtn" IsEnabled="{Binding IsShowItem}"
+                                  IsChecked="{Binding ECSComm,Converter={StaticResource EcsCommTypeOPC2Bool}}" 
+                              Content="OPC"  Style="{StaticResource NormalRadioButton}"  Margin="0 0 50 0"/>
+                                        <RadioButton x:Name="RestCommTypeRadioBtn" IsEnabled="{Binding IsShowItem}"
+                                  IsChecked="{Binding ECSComm,Converter={StaticResource EcsCommTypeRest2Bool}}" 
+                              Content="Rest"  Style="{StaticResource NormalRadioButton}" Margin="0"/>
+                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                        <!--<RadioButton x:Name="RedisCommTypeRadioBtn" IsEnabled="{Binding IsShowItem}"
+                                  IsChecked="{Binding ECSComm,Converter={StaticResource EcsCommTypeRedis2Bool}}" 
+                              Content="Redis(仅限轮询获取状态)"  Style="{StaticResource NormalRadioButton}"  Margin="50 0 0 0"/>-->
+                                    </StackPanel>
+                                </GroupBox>
+                                <StackPanel Visibility="{Binding ElementName=MQCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                    <StackPanel  Orientation="Vertical" >
+                                        <GroupBox Header="连接信息" BorderBrush="Transparent" Style="{StaticResource NormalGroupBox}">
+                                            <StackPanel Orientation="Horizontal" Margin="50 5 0 5">
+                                                <!--<Label Content="连接信息"  Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>-->
+                                                <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
+                                                    <Label Content="RabbitMQ  IP"  Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.ip}" Width="150"   Style="{StaticResource NormalTextBox}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
+                                                    <Label Content="端口" Width="50"   Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.port}" Width="80"  Style="{StaticResource NormalTextBox}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal"  Margin="0 0 20 0">
+                                                    <Label Content="用户名"  Width="60"    HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.user}" Width="150"  Style="{StaticResource NormalTextBox}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="密码" Width="50"   Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.password}" Width="100"  Style="{StaticResource NormalTextBox}"/>
+
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </GroupBox>
+
+                                        <GroupBox Header="Fanout广播" BorderBrush="Transparent" Style="{StaticResource NormalGroupBox}">
+                                            <StackPanel Orientation="Horizontal" Margin="50 5 0 5">
+                                                <Label Content="交换机名称"  Width="150" HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                <TextBox Text="{Binding MqCommModel.fanout_exchange}" Width="350"  Style="{StaticResource NormalTextBox}"/>
+
+                                            </StackPanel>
+                                        </GroupBox>
+                                        <GroupBox Header="RPC交互请求" BorderBrush="Transparent" Style="{StaticResource NormalGroupBox}">
+                                            <StackPanel Orientation="Vertical" Margin="50 5 0 5">
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                                                    <Label Content="RPC队列类型" Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <RadioButton x:Name="OnlyOneRpcRadioBtn"  IsEnabled="{Binding IsShowItem}" Content="单个RPC队列" 
+                                         IsChecked="{Binding MqRpcType,Converter={StaticResource MqRpcOneType2Bool}}"
+                                         Style="{StaticResource NormalRadioButton}" Margin="0 0 10 0"/>
+                                                    <RadioButton x:Name="MultiRpcByCIDRadioBtn"  IsEnabled="{Binding IsShowItem}" Content="多RPC队列（根据Crane ID区分）" 
+                                         IsChecked="{Binding MqRpcType,Converter={StaticResource MqRpcMultiCidType2Bool}}"
+                                         Style="{StaticResource NormalRadioButton}" />
+                                                    <RadioButton x:Name="MultiRpcByBlockIDRadioBtn"  IsEnabled="{Binding IsShowItem}" Content="多RPC队列（根据Block ID区分）"
+                                         IsChecked="{Binding MqRpcType,Converter={StaticResource MqRpcMultiBlockIdType2Bool}}"
+                                         Style="{StaticResource NormalRadioButton}"/>
+
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 10"  >
+                                                    <Label Content="RPC交换机名称" Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.rpc_exchange}" Width="350"  Style="{StaticResource NormalTextBox}"/>
+                                                </StackPanel>
+                                                <!--唯一rpc队列-->
+                                                <StackPanel Orientation="Horizontal" Margin="0 5 0 10"
+                                     Visibility="{Binding ElementName=OnlyOneRpcRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                                    <Label Content="RPC队列名称"  Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.rpc_queue}" Width="250"  Style="{StaticResource NormalTextBox}"/>
+                                                </StackPanel>
+                                                <!--RPC多队列-->
+                                                <StackPanel Visibility="{Binding ElementName=OnlyOneRpcRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}">
+                                                    <StackPanel Orientation="Horizontal"  >
+                                                        <Label Content="RPC队列相关宏" Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <TextBox Text="{Binding MqCommModel.related_cid_macro}" Width="350"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel   Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Label Content="RPC队列列表" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                       
+                                                            <Button Content="添加" 
+                                                         Width="100" Height="25"  Style="{StaticResource NormalButton}" 
+                                                        Command="{Binding AddNewRpcQUeueCommand}" CommandParameter=""></Button>
+                                                            <Button Content="根据Crane ID快速添加" 
+                                                        Visibility="{Binding MqRpcType,Converter={StaticResource MqRpcMultiCidType2Visibility}}"
+                                                        Width="180" Height="25" Margin="10" Style="{StaticResource NormalButton}" 
+                                                        Command="{Binding QuickAddRpcByCraneIDCommand}" CommandParameter=""></Button>
+                                                            <Button Content="根据Block ID快速添加" 
+                                                        Visibility="{Binding MqRpcType,Converter={StaticResource MqRpcMultiBlockIdType2Visible}}"
+                                                        Width="180" Height="25"  Margin="10"  Style="{StaticResource NormalButton}" 
+                                                        Command="{Binding QuickAddRpcByBlockIDCommand}" CommandParameter=""></Button>
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Margin="5"
+                                                Visibility="{Binding ShowRpcQueuesEditOrAdd,Converter={StaticResource Bool2Visibility}}">
+                                                            <Label Content="{Binding MqRpcTypeHeaderDesc}"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                            <TextBox Text="{Binding MqRpcQueueKey}" Width="100" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                            <Label Content="队列名称"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+
+                                                            <TextBox Text="{Binding MqRpcQueueName}" Width="300" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                            <Button Content="确认添加"  Width="100" Height="25"  Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmAddOrEditRpcQueueCommand}" CommandParameter=""></Button>
+                                                        </StackPanel>
+                                                        <ContentControl >
+                                                            <DataGrid  ItemsSource="{Binding MqRpcQueueLst,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                          ColumnWidth="*"
+                                          Style="{StaticResource NormalDataGrid}">
+                                                                <DataGrid.Columns>
+                                                                    <DataGridTemplateColumn Header="操作" Width="120">
+                                                                        <DataGridTemplateColumn.CellTemplate>
+                                                                            <DataTemplate>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <Button Content="编辑"   Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.EditRpcQUeueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                                                    <Button Content="删除"   Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteRpcQUeueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                                                </StackPanel>
+                                                                            </DataTemplate>
+                                                                        </DataGridTemplateColumn.CellTemplate>
+                                                                    </DataGridTemplateColumn>
+                                                                    <DataGridTextColumn     Width="*" Binding="{Binding key}">
+                                                                        <DataGridTextColumn.HeaderTemplate>
+                                                                            <DataTemplate>
+                                                                                <TextBlock Text="{Binding DataContext.MqRpcTypeHeaderDesc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,
+                                                        RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                                                            </DataTemplate>
+                                                                        </DataGridTextColumn.HeaderTemplate>
+                                                                        <DataGridTextColumn.ElementStyle>
+                                                                            <Style>
+                                                                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                                            </Style>
+                                                                        </DataGridTextColumn.ElementStyle>
+                                                                    </DataGridTextColumn>
+                                                                    <DataGridTextColumn Header="RPC队列名称" Width="*" Binding="{Binding queue_name}">
+                                                                        <DataGridTextColumn.ElementStyle>
+                                                                            <Style>
+                                                                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                                            </Style>
+                                                                        </DataGridTextColumn.ElementStyle>
+                                                                    </DataGridTextColumn>
+                                                                </DataGrid.Columns>
+                                                            </DataGrid>
+                                                        </ContentControl>
+                                                    </StackPanel>
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                        </GroupBox>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Visibility="{Binding ElementName=RestCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                    <StackPanel  Orientation="Vertical" >
+                                          <GroupBox Header="连接信息" BorderBrush="Transparent" Style="{StaticResource NormalGroupBox}">
+                                            <StackPanel  Orientation="Vertical" Margin="50 5 0 5">
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                                                    <Label Content="Rest Server 部署" Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <RadioButton x:Name="OnlyOneRestServerRadioBtn"  IsEnabled="{Binding IsShowItem}" Content="唯一一个Rest Server" 
+                                         IsChecked="{Binding MqRpcType,Converter={StaticResource MqRpcOneType2Bool}}"
+                                         Style="{StaticResource NormalRadioButton}" Margin="0 0 10 0"/>
+                                                    <RadioButton x:Name="MultiRestServerByCIDRadioBtn"  IsEnabled="{Binding IsShowItem}" Content="多个Rest Server（根据Crane ID区分）" 
+                                         IsChecked="{Binding MqRpcType,Converter={StaticResource MqRpcMultiCidType2Bool}}"
+                                         Style="{StaticResource NormalRadioButton}" />
+                                                    <RadioButton x:Name="MultiRestServerByBlockIDRadioBtn"  IsEnabled="{Binding IsShowItem}" Content="多个Rest Server（根据Block ID区分）"
+                                         IsChecked="{Binding MqRpcType,Converter={StaticResource MqRpcMultiBlockIdType2Bool}}"
+                                         Style="{StaticResource NormalRadioButton}"/>
+
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 10"  Visibility="{Binding ElementName=OnlyOneRestServerRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}" >
+                                                    <StackPanel Width="150" Orientation="Horizontal">
+                                                        <Label Content="Rest地址"   HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]restserver_format" />
+                                                    </StackPanel>
+                                                    <TextBox Text="{Binding RestCommModel.baseUrl}" Width="350"  Style="{StaticResource NormalTextBox}"/>
+
+                                                
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 10"  Visibility="{Binding ElementName=OnlyOneRestServerRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}" >
+                                                    
+                                                    <StackPanel Width="250" Orientation="Horizontal" >
+                                                        <Label Content="消息头（header) 字段名称"   HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]restserver_header" />
+                                                    </StackPanel>
+                                                    <TextBox Text="{Binding RestCommModel.header_field}" Width="150"  Style="{StaticResource NormalTextBox}"/>
+                                                    <CheckBox Content="对Value进行Base64加密" IsChecked="{Binding RestCommModel.header_encrypt}" Style="{StaticResource NormalCheckBox}" Foreground="White"></CheckBox>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 10"  Visibility="{Binding ElementName=OnlyOneRestServerRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}" >
+
+                                                    <StackPanel Width="250" Orientation="Horizontal" >
+                                                        <Label Content="消息体格式配置"   HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        
+                                                    </StackPanel>
+                                                    <CheckBox Content="用户ID参数放置于JSON根目录层级" IsChecked="{Binding RestCommModel.operator_id_outside_of_args}" Style="{StaticResource NormalCheckBox}" Foreground="White"></CheckBox>
+                                                    <controls:TipsLabel   TipName="[interactive_config]restserver_operator_id_root_path" />
+                                                </StackPanel>
+                                                <!--唯一rpc队列-->
+                                                <!--<StackPanel Orientation="Horizontal" Margin="0 5 0 10"
+                                     Visibility="{Binding ElementName=OnlyOneRpcRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                                    <Label Content="RPC队列名称"  Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                    <TextBox Text="{Binding MqCommModel.rpc_queue}" Width="250"  Style="{StaticResource NormalTextBox}"/>
+                                                </StackPanel>-->
+                                                <!--RPC多队列-->
+                                                <StackPanel Visibility="{Binding ElementName=OnlyOneRestServerRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}">
+                                                    <StackPanel Orientation="Horizontal"  >
+                                                        <Label Content="Rest地址区分宏" Width="150"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <TextBox Text="{Binding RestCommModel.related_cid_macro}" Width="350"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel   Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Label Content="Rest地址列表" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                            <Button Content="添加" 
+                                                         Width="100" Height="25"  Style="{StaticResource NormalButton}" 
+                                                        Command="{Binding AddNewRestUrlCommand}" CommandParameter=""></Button>
+                                                            <Button Content="根据Crane ID快速添加" 
+                                                        Visibility="{Binding MqRpcType,Converter={StaticResource MqRpcMultiCidType2Visibility}}"
+                                                        Width="180" Height="25" Margin="10" Style="{StaticResource NormalButton}" 
+                                                        Command="{Binding QuickAddRestUrlByCraneIDCommand}" CommandParameter=""></Button>
+                                                            <Button Content="根据Block ID快速添加" 
+                                                        Visibility="{Binding MqRpcType,Converter={StaticResource MqRpcMultiBlockIdType2Visible}}"
+                                                        Width="180" Height="25"  Margin="10"  Style="{StaticResource NormalButton}" 
+                                                        Command="{Binding QuickAddRestUrlByBlockIDCommand}" CommandParameter=""></Button>
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Margin="5"
+                                                Visibility="{Binding ShowRpcQueuesEditOrAdd,Converter={StaticResource Bool2Visibility}}">
+                                                            <Label Content="ID"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                            <Label Content="{Binding MqRpcTypeHeaderDesc}"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                            <TextBox Text="{Binding MqRpcQueueKey}" Width="100" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                            <Label Content="Rest请求地址"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+
+                                                            <TextBox Text="{Binding MqRpcQueueName}" Width="300" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                            <Button Content="确认添加"  Width="100" Height="25"  Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmAddOrEditRestUrlCommand}" CommandParameter=""></Button>
+                                                        </StackPanel>
+                                                        <DataGrid  ItemsSource="{Binding RestUrlLst,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+ColumnWidth="*"
+Style="{StaticResource NormalDataGrid}"  HorizontalScrollBarVisibility="Auto" Height="250">
+                                                            <DataGrid.Columns>
+                                                                <DataGridTemplateColumn Header="操作" Width="120">
+                                                                    <DataGridTemplateColumn.CellTemplate>
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <Button Content="编辑"   Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.EditRpcQUeueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+  CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                                                <Button Content="删除"   Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteRpcQUeueCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+  CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                                            </StackPanel>
+                                                                        </DataTemplate>
+                                                                    </DataGridTemplateColumn.CellTemplate>
+                                                                </DataGridTemplateColumn>
+                                                                <DataGridTextColumn     Width="*" Binding="{Binding key}">
+                                                                    <DataGridTextColumn.HeaderTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Text="{Binding DataContext.MqRpcTypeHeaderDesc,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,
+              RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                                                        </DataTemplate>
+                                                                    </DataGridTextColumn.HeaderTemplate>
+                                                                    <DataGridTextColumn.ElementStyle>
+                                                                        <Style>
+                                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                                        </Style>
+                                                                    </DataGridTextColumn.ElementStyle>
+                                                                </DataGridTextColumn>
+                                                                <DataGridTextColumn Header="Rest地址" Width="*" Binding="{Binding RestServerUrl}">
+                                                                    <DataGridTextColumn.ElementStyle>
+                                                                        <Style>
+                                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                                        </Style>
+                                                                    </DataGridTextColumn.ElementStyle>
+                                                                </DataGridTextColumn>
+                                                            </DataGrid.Columns>
+                                                        </DataGrid>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                
+                                            </StackPanel>
+                                        </GroupBox>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!--<StackPanel Visibility="{Binding ElementName=RedisCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                                    <StackPanel  Orientation="Vertical" >
+                                        <GroupBox Header="连接信息" BorderBrush="Transparent" Style="{StaticResource NormalGroupBox}">
+                                            <StackPanel  Orientation="Vertical" Margin="50 5 0 5">
+                                                <StackPanel Orientation="Horizontal" Margin="0 10 0 10" >
+                                                    <StackPanel Orientation="Horizontal" Width="150">
+                                                        <Label Content="Redis地址"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0 0 10 0">
+                                                        <Label Content="IP"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <TextBox Text="{Binding RedisCommModel.ip}" Width="150"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="10 0 10 0">
+                                                        <Label Content="Port"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <TextBox Text="{Binding RedisCommModel.port}" Width="100"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel  Orientation="Horizontal" Margin="10 0 10 0">
+                                                        <Label Content="Password"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                                        <TextBox Text="{Binding RedisCommModel.password}" Width="100"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel  Orientation="Horizontal" Margin="10 0 10 0">
+                                                        <Label Content="数据库编号"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}" />
+                                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                                        <ComboBox  Style="{StaticResource NormalCombox}" Width="100"
+                                                            SelectedIndex="{Binding RedisCommModel.database_index}">
+                                                            <ComboBoxItem Content="db0"/>
+                                                            <ComboBoxItem Content="db1"/>
+                                                            <ComboBoxItem Content="db2"/>
+                                                            <ComboBoxItem Content="db3"/>
+                                                            <ComboBoxItem Content="db4"/>
+                                                            <ComboBoxItem Content="db5"/>
+                                                            <ComboBoxItem Content="db6"/>
+                                                            <ComboBoxItem Content="db7"/>
+                                                            <ComboBoxItem Content="db8"/>
+                                                            <ComboBoxItem Content="db9"/>
+                                                            <ComboBoxItem Content="db10"/>
+                                                            <ComboBoxItem Content="db11"/>
+                                                            <ComboBoxItem Content="db12"/>
+                                                            <ComboBoxItem Content="db13"/>
+                                                            <ComboBoxItem Content="db14"/>
+                                                            <ComboBoxItem Content="db15"/>
+                                                        </ComboBox>
+
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="150 10 0 10">
+                                                    <StackPanel  Orientation="Horizontal">
+                                                        <Label Content="统一前缀标识"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                                        <TextBox Text="{Binding RedisCommModel.prefix_key}" Width="150"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel  Orientation="Horizontal" Margin="10 0 10 0">
+                                                        <Label Content="设备ID标识(根据SCADA宏）"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                                        <TextBox Text="{Binding RedisCommModel.related_cid_macro}" Width="100"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                    <StackPanel  Orientation="Horizontal" Margin="10 0 10 0">
+                                                        <Label Content="轮询周期(毫秒）"  HorizontalContentAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                        <controls:TipsLabel   TipName="[interactive_config]exsystem_name" />
+                                                        <TextBox Text="{Binding RedisCommModel.polling_interval}" Width="100"  Style="{StaticResource NormalTextBox}"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </GroupBox>
+                                    </StackPanel>
+                                </StackPanel>-->
+                                <!--RPC请求返回值-->
+                                <GroupBox Header="交互请求返回值" BorderBrush="Transparent" Style="{StaticResource NormalGroupBox}"
+                                          Visibility="{Binding ElementName=RedisCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}">
+                                    <StackPanel x:Name="requestReturnPanel" Orientation="Vertical" Margin="50 5 50 5">
+                                        <StackPanel Orientation="Horizontal" Margin="0 10 0 10" >
+                                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0" Width="150">
+                                                <TextBlock  Text="请求返回值类型"    Style="{StaticResource NormalText}"></TextBlock>
+                                                <controls:TipsLabel   TipName="[interactive_config]request_return_type" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <RadioButton x:Name="globalReturnRadioBtn"  IsEnabled="{Binding IsShowItem}" IsChecked="{Binding IsCommReturnVal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource NormalRadioButton}" Content="所有接口共用同一套返回值(通用）" Foreground="White" Margin="5,0,20,0"/>
+                                                <RadioButton x:Name="specialReturnRadioBtn"  IsEnabled="{Binding IsShowItem}" IsChecked="{Binding IsSpecialReturnVal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource NormalRadioButton}" Content="每个接口单独定义返回值" Foreground="White" Margin="5,0,15,0"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel  x:Name="SpecialReturnValPanel"   Orientation="Vertical"
+                         Visibility="{Binding ElementName=globalReturnRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Content="通用返回值定义"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                <Button Content="&#xf067;"  Height="25"  Style="{StaticResource ImageButton}"
+                     Command="{Binding AddNewCommonReturnValCommand}" CommandParameter=""></Button>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal"
+                                                Visibility="{Binding ShowCommonValEditOrAdd,Converter={StaticResource Bool2Visibility}}">
+                                                <Label Content="返回值"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                <TextBox Text="{Binding ReturnValue}" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                <Label Content="请求成功返回值"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                <CheckBox  IsChecked="{Binding ReturnValueSuccessFlag}" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalCheckBox}"/>
+
+                                                <Label Content="中文描述"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                <TextBox Text="{Binding ReturnValueDescZh}" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                <Label Content="英文描述"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalLabel}"/>
+                                                <TextBox Text="{Binding ReturnValueDescEn}" Width="150" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Style="{StaticResource NormalTextBox}"/>
+                                                <Button Content="确认"  Width="100" Height="25"  Style="{StaticResource NormalButton}"
+                     Command="{Binding ConfirmAddOrEditReturnValCommand}" CommandParameter=""></Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <DataGrid  Visibility="{Binding ElementName=globalReturnRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}"
+                                            ItemsSource="{Binding Path=CommonReturnValueLst}" ColumnWidth="*"  Width="auto"
+                                          Style="{StaticResource NormalDataGrid}" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Visible" >
+
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="操作" Width="120">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Content="编辑" Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.EditCommonReturnValCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+
+                                                                <Button Content="删除" Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteCommonReturnValCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTextColumn  Header="返回值"   Binding="{Binding Path=return_value}"  Width="50">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="表示请求成功"  Binding="{Binding is_success,Converter={StaticResource Bool2DisplayYesOrNo}}" Width="100">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="中文描述"  Binding="{Binding Path=return_desc_zh}" ElementStyle="{StaticResource DataGridTextColumnElementStyle}" Width="*">
+                                                   
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="英文描述" Binding="{Binding Path=return_desc_en}" ElementStyle="{StaticResource DataGridTextColumnElementStyle}" Width="*">
+                                                   
+                                                </DataGridTextColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+
+                                </GroupBox>
+
+                            </StackPanel>
+                        </Border>
+                    </ScrollViewer>
+                </Expander>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                    <Button Content="保存基础信息" Command="{Binding SaveBaseInfoCommand}" Style="{StaticResource NormalButton}" Width="150" Height="40"/>
+                </StackPanel>
+                <!--RPC请求接口-->
+                <StackPanel Visibility="{Binding ShowRpcAndFanoutInfo,Converter={StaticResource Bool2Visibility}}">
+                    <hc:Divider Visibility="{Binding IsShowItem,Converter={StaticResource Bool2Visibility}}"  LineStroke="#393939"  Content="交互接口（修改后自动保存）" Foreground="White"/>
+                    <StackPanel Visibility="{Binding ElementName=RedisCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}">
+                        <Expander  x:Name="RpcRequestExpander" Header="发送请求接口(点击展开）" Visibility="{Binding IsShowItem,Converter={StaticResource Bool2Visibility}}" 
+                           Expanded="Expander_Expanded"    Foreground="White"  Margin="5" HorizontalAlignment="Stretch"
+                                BorderBrush="{StaticResource Content.Expander.Border}"  BorderThickness="1"
+                               Background="{StaticResource Content.Expander.Header.Border}">
+                            <ScrollViewer>
+                                <Border BorderBrush="{StaticResource Content.Expander.Border}" BorderThickness="1" Padding="5">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel >
+                                            <Label Content="接口列表" Style="{StaticResource NormalLabel}"/>
+                                            <Button Content="&#xf067;" ToolTip="Add"
+                                        Command="{Binding AddNewRpcCommand}" 
+                                        Style="{StaticResource ImageButton}" />
+                                            <!--<Label Content="查询关键词" Style="{StaticResource NormalLabel}"/>
+                                <TextBox Style="{StaticResource NormalTextBox}" Width="200"/>
+                                <Button Content="查询" Style="{StaticResource NormalButton}" />-->
+                                            <controls:SearchTextBox DockPanel.Dock="Right"  HorizontalAlignment="Right" Width="300" PreviewTxt="输入接口名称/描述" BtnCommand="{Binding QueryRpcCommand}"   Margin="0 0 10 0" ></controls:SearchTextBox>
+                                            <TextBlock />
+                                        </DockPanel>
+                                        <DataGrid x:Name="requestDgrid" Margin="5" Height="300" Style="{StaticResource NormalDataGrid}"
+                                          ItemsSource="{Binding RpcInterfaceLst}" VerticalContentAlignment="Center" >
+                                            <DataGrid.ContextMenu>
+                                                <ContextMenu Name="RpcLstMenu"   StaysOpen="True" PlacementTarget="{Binding ElementName=requestDgrid,Path=DataContext}">
+                                                    <MenuItem Header="复制" Command="{Binding CopyRpcInterfaceCommand}" 
+                                                      CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ContextMenu},Path=PlacementTarget}"></MenuItem>
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="操作" Width="120">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Content="编辑" Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.EditRpcCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                                <Button Content="删除" Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.DeleteRpcCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTextColumn Header="序号" Binding="{Binding Id}" Width="50">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="接口名称" Binding="{Binding RequestInternalName}" ElementStyle="{StaticResource DataGridTextColumnElementStyle}" Width="*">
+
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="接口描述" Binding="{Binding RequestDesc}" ElementStyle="{StaticResource DataGridTextColumnElementStyle}" Width="*">
+
+                                                </DataGridTextColumn>
+
+                                                <DataGridTextColumn  Visibility="{Binding Value,Source={StaticResource ShowMqColumns}}"
+                                        Header="msg__type" Binding="{Binding MsgType}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowOpcColumns}}"
+                                        Header="事件ID点(event)" Binding="{Binding DestTagName.args_tag_internal_name}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowOpcColumns}}"
+                                                        Header="参数点(args)" Binding="{Binding DestTagName.event_tag_internal_name}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowOpcColumns}}"
+                                                        Header="反馈点(return)" Binding="{Binding DestTagName.return_tag_internal_name}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowOpcColumns}}"
+                                                        Header="请求点" Binding="{Binding DestTagName.request_tag_internal_name}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowOpcColumns}}"
+                                                        Header="反馈点" Binding="{Binding DestTagName.feedback_tag_internal_name}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowOpcColumns}}"
+                                                        Header="反馈点类型" Binding="{Binding DestTagName.return_type}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <!--<DataGridTextColumn Visibility="{Binding Value,Source={StaticResource ShowReturnValueColumns}}"
+                                        Header="自定义返回值" Binding="{Binding ReturnValueLst}"  Width="*"/>-->
+
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+                            </ScrollViewer>
+                        </Expander>
+
+                    </StackPanel>
+                    <StackPanel  Visibility="{Binding ElementName=MQCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2Visibility}}">
+                        <Expander x:Name="FanoutExpander"   Expanded="Expander_Expanded"    Header="{Binding ECSComm,Converter={StaticResource EcsCommTypeInt2FanoutTitle}}"
+                          Visibility="{Binding IsShowItem,Converter={StaticResource Bool2Visibility}}" 
+                          Foreground="White"  Margin="5"
+                            BorderBrush="{StaticResource Content.Expander.Border}"  BorderThickness="1"
+                               Background="{StaticResource Content.Expander.Header.Border}">
+                            <ScrollViewer>
+                                <Border BorderBrush="{StaticResource Content.Expander.Border}" BorderThickness="1" Padding="5">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel >
+                                            <Label Content="接口列表" Style="{StaticResource NormalLabel}"/>
+                                            <Button Content="&#xf067;" Command="{Binding AddNewFanoutCommand}" 
+                                            Style="{StaticResource ImageButton}" />
+                                            <!--<hc:ComboBox hc:TitleElement.TitlePlacement="Left" hc:TitleElement.Title="前置条件" Foreground="White" Background="Transparent" Width="200"/>-->
+                                            <!--<Label Content="查询关键词" Style="{StaticResource NormalLabel}"/>
+                            <TextBox  Style="{StaticResource NormalTextBox}"  Width="200"/>
+                            <Button Content="查询" Style="{StaticResource NormalButton}" />-->
+                                            <controls:SearchTextBox DockPanel.Dock="Right" HorizontalAlignment="Right" Width="300" PreviewTxt="输入接口名称/描述" BtnCommand="{Binding QueryFanoutCommand}"   Margin="0 0 10 0" ></controls:SearchTextBox>
+                                            <TextBlock />
+                                        </DockPanel>
+                                        <DataGrid x:Name="requestDgrid1"  Height="300" Margin="5"  ItemsSource="{Binding ReceiveFanoutLst,Mode=TwoWay}"  Style="{StaticResource NormalDataGrid}" >
+                                            <DataGrid.Resources>
+                                                <Style TargetType="DataGridCell">
+                                                    <Style.Resources>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+                                                    </Style.Resources>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <!--<Setter Property="Foreground" Value="Red"/>-->
+                                                            <Setter Property="Background" Value="{StaticResource Content.DataGrid.Selected.BackGround}"/>
+                                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGrid.Resources>
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="操作" Width="120">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Content="编辑"  Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.EditFanoutCommand    ,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                                <Button Content="删除"  Width="60" Style="{StaticResource TextButton}" Command="{Binding DataContext.DeleteFanoutCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTextColumn Header="序号" Binding="{Binding Id}" Width="50">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="接口名称" Binding="{Binding FanoutName}"  Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="描述" Binding="{Binding FanoutDesc}"  ElementStyle="{StaticResource DataGridTextColumnElementStyle}" Width="*">
+
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="msg_type" Binding="{Binding MsgType}"  Width="*" Visibility="{Binding Value,Source={StaticResource HideUnRedisColumns}}">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="设备/操作台区分字段" Binding="{Binding DeviceField}" Visibility="{Binding Value,Source={StaticResource HideUnRedisColumns}}"
+                                            Width="*">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="接收目标类型" Binding="{Binding ReceiveType}"  Width="*" Visibility="{Binding Value,Source={StaticResource HideUnRedisColumns}}">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <!--<DataGridTextColumn Header="数据存储类型" Binding="{Binding ReceiveStoreType}"  Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>-->
+                                                <!--<DataGridTextColumn Header="写Memory点类型" Binding="{Binding ReceiveWriteType}"  Width="*">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style>
+                                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>-->
+                                                <!--<DataGridTextColumn Header="Memory点名" Binding="{Binding CacheTagInternalName}"  Width="*">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style>
+                                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>-->
+                                                <!--<DataGridTextColumn Header="匹配字段名称" Binding="{Binding CacheWriteCondition.field_name}"  Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="匹配值" Binding="{Binding CacheWriteCondition.match_tag}"  Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="匹配点名（内部）" Binding="{Binding DestTagName.event_tag_internal_name}"  Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="缓存更新点名" Binding="{Binding CacheTagInternalName}"  Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="全量存储更新点名" Binding="{Binding FullStoreTagInternalName}"  Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>-->
+
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+                            </ScrollViewer>
+
+                        </Expander>
+
+                    </StackPanel>
+                    <StackPanel Visibility="{Binding ElementName=RedisCommTypeRadioBtn,Path=IsChecked,Converter={StaticResource Bool2ReverseVisibility}}">
+                        <Expander x:Name="DefaultValueExpander"  Expanded="Expander_Expanded"     Header="控件默认值配置(点击展开）" 
+                          Visibility="{Binding IsShowItem,Converter={StaticResource Bool2Visibility}}"  Foreground="White"  Margin="5"
+                            BorderBrush="{StaticResource Content.Expander.Border}"  BorderThickness="1"
+                               Background="{StaticResource Content.Expander.Header.Border}">
+                            <ScrollViewer>
+                                <Border BorderBrush="{StaticResource Content.Expander.Border}" BorderThickness="1" Padding="5">
+                                    <StackPanel Orientation="Vertical">
+                                        <DockPanel   >
+                                            <Label Content="控件默认值配置" Style="{StaticResource NormalLabel}"/>
+                                            <Button Content="&#xf067;" Command="{Binding AddNewControlDefaultCommand}"
+                                            Style="{StaticResource ImageButton}" />
+                                            <!--<hc:ComboBox hc:TitleElement.TitlePlacement="Left" hc:TitleElement.Title="前置条件" Foreground="White" Background="Transparent" Width="200"/>-->
+                                            <!--<Label Content="查询关键词" Style="{StaticResource NormalLabel}"/>
+                            <TextBox  Style="{StaticResource NormalTextBox}"  Width="200"/>
+                            <Button Content="查询" Style="{StaticResource NormalButton}" />-->
+                                            <controls:SearchTextBox DockPanel.Dock="Right" HorizontalAlignment="Right" Width="300" PreviewTxt="输入控件名称/描述" BtnCommand="{Binding QueryDefaultValueCommand}"   Margin="0 0 10 0" ></controls:SearchTextBox>
+                                            <TextBlock />
+                                        </DockPanel>
+                                        <DataGrid x:Name="requestDgrid12" Margin="5"  Height="300" ItemsSource="{Binding ControlDefaultValLst}" 
+                                    Style="{StaticResource NormalDataGrid}">
+                                            <!--<DataGrid.Resources>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="FontSize" Value="15"/>
+                                        <Style.Resources>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+
+                                        </Style.Resources>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                -->
+                                            <!--<Setter Property="Foreground" Value="Red"/>-->
+                                            <!--
+                                                <Setter Property="Background" Value="#434041"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.Resources>-->
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="操作"  Width="120" >
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Content="编辑"  Width="60" Style="{StaticResource TextButton}"   Command="{Binding DataContext.EditControlDefaultCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                                <Button Content="删除" Width="60" Style="{StaticResource TextButton}"  Command="{Binding DataContext.DeleteControlDefaultCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid}}" 
+                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid},Path=SelectedItem}"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <!--<DataGridTextColumn Header="序号" Binding="{Binding id}" Width="50">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>-->
+                                                <DataGridTextColumn Header="控件名称（内部）" Width="*" Binding="{Binding control_internal_name}">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="填充类型"   Width="*"  Binding="{Binding fill_type}">
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style>
+                                                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <!--<DataGridTextColumn Header="填充条件" Width="*" Binding="{Binding fill_condition}">
+
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="填充内容" Width="*" Binding="{Binding fill_content}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style>
+                                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>-->
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+                            </ScrollViewer>
+                        </Expander>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

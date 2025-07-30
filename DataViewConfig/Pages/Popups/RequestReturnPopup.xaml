@@ -1,0 +1,69 @@
+﻿<Window x:Name="RequestReturnWin" 
+    x:Class="DataViewConfig.Pages.Popups.RequestReturnPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataViewConfig.Pages.Popups"
+         xmlns:controls="clr-namespace:DataViewConfig.Controls"
+        xmlns:converter="clr-namespace:DataViewConfig.Converters" 
+        xmlns:vm="clr-namespace:DataViewConfig.ViewModels" 
+        xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        d:DataContext="{d:DesignInstance Type=vm:RequestReturnPopupViewModel}"
+        mc:Ignorable="d"
+        Title="参数选择" Height="280" Width="400" WindowStartupLocation="CenterScreen"  Background="{StaticResource NormalBackGround}">
+<Window.Resources>
+        <converter:Bool2VisibilityConverter x:Key="Bool2Visibility"/>
+        <ObjectDataProvider x:Key="targetTypeEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:ParamTargetType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="paramSourceEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}" >
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="dv_config:RequestParamSource" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </Window.Resources>
+    <StackPanel Orientation="Vertical">
+        <!--接口列表展示-->
+        <StackPanel Orientation="Vertical">
+            <DataGrid Margin="5" Height="150" ItemsSource="{Binding ReturnValLst}" HorizontalScrollBarVisibility="Visible" AutoGenerateColumns="True" CanUserAddRows="True"  AlternatingRowBackground = "Gainsboro" AlternationCount = "2" >
+                <DataGrid.Columns>
+                    <!--<DataGridCheckBoxColumn Header="选择"  Binding="{Binding IsSelected}"></DataGridCheckBoxColumn>-->
+                    <DataGridTextColumn  Width="70" Header="返回值" Binding="{Binding return_value}"/>
+                    <DataGridTextColumn   Width="250" Header="返回值描述" Binding="{Binding return_desc}"/>
+                    
+
+                    <!--<DataGridTemplateColumn Header="参数目标值类型">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox SelectedItem="{Binding Path=TargetValType}" 
+                                          ItemsSource="{Binding Source={StaticResource targetTypeEnum}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="控件内部名称" Binding="{Binding ParamInternalName}"/>
+                    <DataGridTextColumn Header="常量值" Binding="{Binding ConstValue}"/>
+                    <DataGridTextColumn Header="点名（内部）" Binding="{Binding TagInternalName}"/>
+                    <DataGridTextColumn Header="点名JSON_Path" Binding="{Binding TagValueJsonPath}"/>
+                    <DataGridTextColumn Header="控件内部名称" Binding="{Binding ControlInternalName}"/>
+                    <DataGridTextColumn Header="宏名称" Binding="{Binding MacroName}"/>
+                    <DataGridTextColumn Header="数组参数列表" Binding="{Binding ArrayParamIdLst}"/>
+                    <DataGridTextColumn Header="拼接参数列表" Binding="{Binding SpliceParamIdLst}"/>
+                    <DataGridTextColumn Header="嵌套参数列表" Binding="{Binding ChildrenParamId}"/>
+                    <DataGridTextColumn Header="数据库表名" Binding="{Binding DbSheetName}"/>-->
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+            <Button Style="{StaticResource NormalButton}" Width="100" Height="35" Content="确定" Margin="20" 
+                    Command="{Binding ConfirmCommand}" CommandParameter="{Binding ElementName=RequestReturnWin}" />
+            <Button Style="{StaticResource NormalButton}" Width="100" Height="35" Content="取消" Margin="20" 
+                    Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=RequestReturnWin}" />
+        </StackPanel>
+        
+    </StackPanel>
+</Window>

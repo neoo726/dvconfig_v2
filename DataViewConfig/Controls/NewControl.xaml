@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="DataViewConfig.Controls.NewControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataViewConfig.Controls"
+             xmlns:current="clr-namespace:DataViewConfig"
+             xmlns:dv_config="clr-namespace:DataView_Configuration;assembly=DataView_Configuration" d:DataContext="{d:DesignInstance Type=current:NewControlViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="1290"
+             
+             Foreground="White">
+    <UserControl.Resources>
+        
+        
+    </UserControl.Resources>
+   
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+           
+        </Grid.RowDefinitions>
+        <!--第一行-->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Label Content="控件名称(内部）" Margin="5,0,5,0" MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <TextBox Style="{StaticResource NormalTextBox}"  Text="{Binding ControlInternalName}"  Width="200" Margin="5,0,50,0"/>
+            <Label Content="控件类型"  Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <ComboBox Style="{DynamicResource NormalCombox}" Width="100" Margin="5,0,50,0"
+                      ItemsSource="{Binding Source={current:Enumeration {x:Type dv_config:ControlType}}}"
+                      DisplayMemberPath="Description" 
+                      SelectedItem="{Binding CurCoontrolType,Mode=TwoWay}"/>
+
+            <Label Content="控件AccessID" Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <TextBox Style="{StaticResource NormalTextBox}" Text="{Binding AccessId}" Width="100" Margin="5,0,50,0"/>
+
+            <Label Content="控件所在画面(内部名称）"  Margin="5,0,5,0"  MinWidth="100" Style="{StaticResource NormalLabel}"/>
+            <ComboBox Style="{DynamicResource NormalCombox}" Width="150" Margin="5,0,50,0"
+                      ItemsSource="{Binding ScreenNameLst}"
+                      DisplayMemberPath="dv_screen_internal_name"  
+                      SelectedItem="{Binding SelectedScreenInternalName,Mode=TwoWay}"/>
+            
+        </StackPanel>
+      
+        <!--第三行-->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="添加" Style="{DynamicResource NormalButton}" Width="150"
+                    Command="{Binding AddCommand}" CommandParameter=""/>
+        </StackPanel>
+    </Grid>
+</UserControl>
