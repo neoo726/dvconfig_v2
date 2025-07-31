@@ -1,0 +1,366 @@
+[
+  {
+    "tips_name": "[template_selection_page]auto_rmg_ecsmq",
+    "tips_type": 2,
+    "tips_zh": "DV与BMS\\ROCS通过RabbitMQ通信",
+    "tips_en": "",
+    "tips_img_url": "RXG_LocalPLC_OPCUA_Structure.png"
+  },
+  {
+    "tips_name": "[template_selection_page]auto_rmg_rccs",
+    "tips_type": 2,
+    "tips_zh": "DV所有数据均从RCCS来",
+    "tips_en": "",
+    "tips_img_url": "RXG_Uniform_RCCS_OPCUA_Structure.png"
+  },
+  {
+    "tips_name": "[template_selection_page]auto_rmg_roscpu",
+    "tips_type": 2,
+    "tips_zh": "每个操作台配置一个CPU",
+    "tips_en": "",
+    "tips_img_url": "RXG_RosCPU_OPCUA_Structure.png"
+  },
+  {
+    "tips_name": "[template_selection_page]semiauto_sts_br",
+    "tips_type": 1,
+    "tips_zh": "远控桥吊，中控贝加莱触摸屏",
+    "tips_en": "远控桥吊，中控贝加莱触摸屏",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[template_selection_page]semiauto_sts_rccs",
+    "tips_type": 1,
+    "tips_zh": "远控桥吊，中控西门子",
+    "tips_en": "远控桥吊，中控西门子",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[template_selection_page]auto_sts_br",
+    "tips_type": 1,
+    "tips_zh": "自动化桥吊，中控贝加莱触摸屏",
+    "tips_en": "自动化桥吊，中控贝加莱触摸屏",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[template_selection_page]auto_sts_rccs",
+    "tips_type": 1,
+    "tips_zh": "自动化桥吊，中控西门子",
+    "tips_en": "自动化桥吊，中控西门子",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[tag_config_page]tag_dataaccess",
+    "tips_type": 1,
+    "tips_zh": "tag在SCADA-DataAccess中定义的名称",
+    "tips_en": "tag在SCADA-DataAccess中定义的名称",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[tag_config_page]tag_data_type",
+    "tips_type": 1,
+    "tips_zh": "tag的数据类型，与SCADA-DataAccess中一致",
+    "tips_en": "tag的数据类型，与SCADA-DataAccess中一致",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[tag_config_page]tag_postfix",
+    "tips_type": 1,
+    "tips_zh": "tag的后缀类型",
+    "tips_en": "tag的后缀类型",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[tag_config_page]tag_internal_name",
+    "tips_type": 1,
+    "tips_zh": "tag的内部名称",
+    "tips_en": "tag的内部名称",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[tag_config_page]tag_related_macro",
+    "tips_type": 1,
+    "tips_zh": "tag的相关宏名称",
+    "tips_en": "tag的相关宏名称",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[screen_config_page]screen_internal_name",
+    "tips_type": 1,
+    "tips_zh": "画面的内部名称",
+    "tips_en": "画面的内部名称",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[screen_config_page]screen_csw_name",
+    "tips_type": 1,
+    "tips_zh": "画面的文件名称(.csw格式文件）",
+    "tips_en": "画面的文件名称(.csw格式文件）",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[control_config_page]access_id",
+    "tips_type": 2,
+    "tips_zh": "控件在当前画面中的唯一标识ID",
+    "tips_en": "控件在当前画面中的唯一标识ID",
+    "tips_img_url": "AccessID.png"
+  },
+  {
+    "tips_name": "[control_config_page]control_internal_name",
+    "tips_type": 1,
+    "tips_zh": "控件的内部名称",
+    "tips_en": "控件的内部名称",
+    "tips_img_url": "AccessID.png"
+  },
+  {
+    "tips_name": "[control_config_page]control_type",
+    "tips_type": 1,
+    "tips_zh": "控件类型",
+    "tips_en": "控件类型",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[control_config_page]control_screen",
+    "tips_type": 1,
+    "tips_zh": "控件所属画面",
+    "tips_en": "控件所属画面",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[login_config_page]local_user_list",
+    "tips_type": 1,
+    "tips_zh": "本地用户列表",
+    "tips_en": "本地用户列表",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[login_config_page]user_check_type",
+    "tips_type": 1,
+    "tips_zh": "选择用户校验类型,其中UMS_Other表示除UMS_DV、UMS_ECS和本地登录以外的其他用户校验方式",
+    "tips_en": "选择用户校验类型,其中UMS_Other表示除UMS_DV、UMS_ECS和本地登录以外的其他用户校验方式",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[login_config_page]inform_ecs_object",
+    "tips_type": 1,
+    "tips_zh": "通知交互对象",
+    "tips_en": "通知交互对象",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[block_config_page]block_plc_id",
+    "tips_type": 1,
+    "tips_zh": "设备所在堆场的ID，用于计算大车移动动画、设备配置、任务处理等",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[dv_tips_config]dv_tips_internal_name",
+    "tips_type": 1,
+    "tips_zh": "名称用于二次代码中调用，或配置工具中的参数配置选择",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit_config]param_validation_checkbox",
+    "tips_type": 1,
+    "tips_zh": "勾选后，发送请求时会按照配置的规则进行参数校验，并弹出对应提示框",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit_config]param_invalid_tips_selection",
+    "tips_type": 1,
+    "tips_zh": "参数校验失败后，根据配置的提示名称弹出对应提示内容。若没有合适的提示内容，可以在【基础功能】-【提示弹窗】中配置。",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit_config]param_source",
+    "tips_type": 2,
+    "tips_zh": "",
+    "tips_en": "",
+    "tips_img_url": "ParamSource.png"
+  },
+  {
+    "tips_name": "[rpc_edit]rpc_internal_name",
+    "tips_type": 1,
+    "tips_zh": "接口名称（不能重复），建议命名规范：交互对象_MsgType",
+    "tips_en": "接口名称（不能重复），建议命名规范：交互对象_MsgType",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit]control_name",
+    "tips_type": 1,
+    "tips_zh": "控件内部名称（配置来源：工程配置-控件）",
+    "tips_en": "控件内部名称（配置来源：工程配置-控件）",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit]json_filed_name(mq)",
+    "tips_type": 1,
+    "tips_zh": "该参数对应的JSON字段名称，用于生成JSON参数时的动态拼接。",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit]tag_internal_name",
+    "tips_type": 1,
+    "tips_zh": "点名（内部）（配置来源：工程配置-点名）",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit_config]param_json_path",
+    "tips_type": 1,
+    "tips_zh": "JSON数据中的指定字段名称",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[rpc_edit_config]param_constant",
+    "tips_type": 1,
+    "tips_zh": "参数是一个固定值时，可选择该参数类型",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[fanout_edit]msg_type",
+    "tips_type": 1,
+    "tips_zh": "接收Fanout消息时，区分不同接口消息的字段",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[fanout_edit]msg_target_type",
+    "tips_type": 1,
+    "tips_zh": "Fanout消息的目标类型（设备的消息、操作台的消息、通用的消息等）",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[fanout_edit]crane_rcs_identify_filed_name",
+    "tips_type": 1,
+    "tips_zh": "用来确认设备或操作台标识的字段名称",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[fanout_edit]direct_write_memory_tag",
+    "tips_type": 1,
+    "tips_zh": "直接写入memory点",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[fanout_edit]direct_write_tag",
+    "tips_type": 1,
+    "tips_zh": "直接写入memory点",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[fanout_edit]condition_write_tag",
+    "tips_type": 1,
+    "tips_zh": "分条件写入不同memory点",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[control_default_value_edit]fill_type",
+    "tips_type": 1,
+    "tips_zh": "填充下拉框列表：适用于ComboBox控件；其他：适用于DrawEdit文本输入框控件",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[control_default_value_edit]fill_tag_value",
+    "tips_type": 1,
+    "tips_zh": "默认填充值的来源为数据点（支持数组类型和JSON数据类型）",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[crane_config]multi_crane_type_title",
+    "tips_type": 1,
+    "tips_zh": "适用于项目中存在多机型的场景(例如同时存在单悬臂、双悬臂)，启用该配置项后，需要在画面配置中手动创建Overview+机型的画面名称。",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[crane_config]multi_crane_group_title",
+    "tips_type": 1,
+    "tips_zh": "适用于项目中存在岸桥、场桥融合（操作台）的场景。启用该配置项后，需要在画面配置中手动创建Overview+类别的画面名称。",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[crane_config]crane_group_name",
+    "tips_type": 1,
+    "tips_zh": "默认跳台画面名称规则(大小写不限制）：同时区分类别和机型：Overview_类别名称_机型名称.csw，例如Overview_sts_a.csw；仅区分类别：Overview_类别名称.csw，例如Overview_sts.csw，",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[crane_config]crane_ip_config_enable",
+    "tips_type": 1,
+    "tips_zh": "适用于岸桥（西门子中控PLC）场景，绑定机器时会将该IP地址写入OPC（动态切IP驱动）中",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[crane_config]crane_name_format",
+    "tips_type": 1,
+    "tips_zh": "根据名称格式快速批量生成设备",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[ros_config]ros_name_format",
+    "tips_type": 1,
+    "tips_zh": "根据名称格式快速批量生成操作台",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[switch_screen]error_code",
+    "tips_type": 1,
+    "tips_zh": "由ECS系统（例如BMS,ROCS）发来的异常代码",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[interactive_config]exsystem_name",
+    "tips_type": 1,
+    "tips_zh": "交互对象的名称（不能与其他系统重复）",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[interactive_config]restserver_format",
+    "tips_type": 1,
+    "tips_zh": "示例 127.0.0.1:8080",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[interactive_config]restserver_header",
+    "tips_type": 1,
+    "tips_zh": "http请求中的消息头（header).不填写表示不需要消息头;填写仅需配置字段即可（例如asc_id)，代码中会默认将设备名赋值给asc_id",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[interactive_config]restserver_operator_id_root_path",
+    "tips_type": 1,
+    "tips_zh": "http请求中的参数如果配置有operator_id或operatorId.自动将该参数位置从args字段内部调整至与args字段同级的位置",
+    "tips_en": "",
+    "tips_img_url": ""
+  },
+  {
+    "tips_name": "[interactive_config]exsystem_enable",
+    "tips_type": 1,
+    "tips_zh": "该交互对象的通讯是否启用",
+    "tips_en": "",
+    "tips_img_url": ""
+  }
+]

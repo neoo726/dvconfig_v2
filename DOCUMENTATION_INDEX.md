@@ -127,6 +127,115 @@
 
 ---
 
+### 7. [CODE_REVIEW_REPORT.md](./CODE_REVIEW_REPORT.md) - 代码评审报告
+**目标读者**: 开发人员、架构师、技术负责人
+**内容概要**:
+- 全面的代码质量评估
+- 架构设计问题分析
+- MVVM 实现问题和改进建议
+- 安全性和性能问题识别
+- 具体的重构建议和代码示例
+- 优先级排序的改进计划
+- 重构路线图和预期收益
+
+**适用场景**:
+- 代码质量评估和改进
+- 架构重构规划
+- 技术债务管理
+- 开发团队培训和指导
+
+---
+
+### 8. [IMPROVEMENT_ROADMAP.md](./IMPROVEMENT_ROADMAP.md) - 改进路线图
+**目标读者**: 项目经理、开发团队、技术负责人
+**内容概要**:
+- 代码改进和UI升级的协调计划
+- 分阶段实施策略和时间安排
+- 并行开发的分支管理策略
+- 关键里程碑和成功指标
+- 风险控制和缓解措施
+- 团队分工和资源分配建议
+
+**适用场景**:
+- 项目规划和进度管理
+- 团队协调和任务分配
+- 风险评估和控制
+- 改进效果评估
+
+---
+
+### 9. [UI_UPGRADE_GUIDE.md](./UI_UPGRADE_GUIDE.md) - UI升级指南
+**目标读者**: UI/UX设计师、前端开发人员
+**内容概要**:
+- 现代化UI设计理念和原则
+- 详细的界面布局设计方案
+- 配置页面重设计建议
+- 主题和样式系统设计
+- 用户体验增强方案
+- 技术实施建议和代码示例
+
+**适用场景**:
+- UI界面设计和重构
+- 用户体验优化
+- 前端技术选型
+- 界面开发实施
+
+---
+
+### 10. [ARCHITECTURE_REFACTOR_PLAN.md](./ARCHITECTURE_REFACTOR_PLAN.md) - 架构重构实施计划
+**目标读者**: 开发人员、架构师、技术负责人
+**内容概要**:
+- 分阶段的架构重构详细计划
+- 依赖注入、数据访问层、MVVM优化的具体实施步骤
+- 每个阶段的验收标准和测试要求
+- 代码示例和最佳实践
+- 风险控制和回滚策略
+- 确保编译运行正常的实施指导
+
+**适用场景**:
+- 架构重构实施
+- 代码质量改进
+- 技术债务清理
+- 开发团队协作
+
+---
+
+### 11. [REFACTOR_CHECKLIST.md](./REFACTOR_CHECKLIST.md) - 重构检查清单
+**目标读者**: 开发人员、项目经理、QA测试人员
+**内容概要**:
+- 详细的重构任务检查清单
+- 每个阶段的具体任务和验收标准
+- 进度跟踪和问题记录表格
+- 功能测试和性能测试清单
+- 风险评估和缓解措施
+- 成功标准和质量指标
+
+**适用场景**:
+- 重构进度跟踪
+- 质量保证和测试
+- 项目管理和协调
+- 问题识别和解决
+
+---
+
+### 12. [ARCHITECTURE_IMPLEMENTATION_REPORT.md](./ARCHITECTURE_IMPLEMENTATION_REPORT.md) - 架构实施报告
+**目标读者**: 开发团队、技术负责人、项目经理
+**内容概要**:
+- 完整的架构重构实施记录
+- 每个阶段的详细实施内容和结果
+- 代码质量和性能改进指标
+- 技术实现亮点和最佳实践
+- 使用示例和迁移指导
+- 后续改进建议和发展路线
+
+**适用场景**:
+- 架构重构验收
+- 技术成果展示
+- 团队知识传承
+- 后续开发指导
+
+---
+
 ## 📖 文档使用指南
 
 ### 新用户入门路径
@@ -140,12 +249,27 @@
 2. **结构**: [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) - 代码结构分析
 3. **技术**: [TECHNICAL_DOCUMENTATION.md](./TECHNICAL_DOCUMENTATION.md) - 技术架构理解
 4. **API**: [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) - 接口开发参考
+5. **评审**: [CODE_REVIEW_REPORT.md](./CODE_REVIEW_REPORT.md) - 代码质量评估和改进建议
+6. **重构**: [ARCHITECTURE_REFACTOR_PLAN.md](./ARCHITECTURE_REFACTOR_PLAN.md) - 架构重构实施计划
+7. **检查**: [REFACTOR_CHECKLIST.md](./REFACTOR_CHECKLIST.md) - 重构任务检查清单
 
 ### 系统管理员路径
 1. **功能**: [README.md](./README.md) - 系统功能了解
 2. **部署**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - 部署和配置
 3. **操作**: [USER_MANUAL.md](./USER_MANUAL.md) - 管理和维护
 4. **技术**: [TECHNICAL_DOCUMENTATION.md](./TECHNICAL_DOCUMENTATION.md) - 技术支持
+
+### 项目经理/团队负责人路径
+1. **概览**: [README.md](./README.md) - 项目整体了解
+2. **规划**: [IMPROVEMENT_ROADMAP.md](./IMPROVEMENT_ROADMAP.md) - 改进计划和时间安排
+3. **评审**: [CODE_REVIEW_REPORT.md](./CODE_REVIEW_REPORT.md) - 技术债务和改进建议
+4. **部署**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - 部署和运维指导
+
+### UI/UX设计师路径
+1. **现状**: [README.md](./README.md) - 项目功能了解
+2. **设计**: [UI_UPGRADE_GUIDE.md](./UI_UPGRADE_GUIDE.md) - UI设计指南和规范
+3. **实施**: [IMPROVEMENT_ROADMAP.md](./IMPROVEMENT_ROADMAP.md) - 设计实施计划
+4. **技术**: [TECHNICAL_DOCUMENTATION.md](./TECHNICAL_DOCUMENTATION.md) - 技术约束了解
 
 ## 🔍 快速查找指南
 
@@ -189,6 +313,8 @@
 - 架构设计: [TECHNICAL_DOCUMENTATION.md](./TECHNICAL_DOCUMENTATION.md#系统架构)
 - API参考: [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
 - 代码结构: [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)
+- 代码质量: [CODE_REVIEW_REPORT.md](./CODE_REVIEW_REPORT.md)
+- 重构建议: [CODE_REVIEW_REPORT.md](./CODE_REVIEW_REPORT.md#优化建议)
 
 #### 配置和集成问题
 - 配置方法: [USER_MANUAL.md](./USER_MANUAL.md)

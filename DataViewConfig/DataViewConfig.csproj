@@ -243,12 +243,7 @@
     <Compile Include="Converters\Bool2InverseConverter.cs" />
     <Compile Include="EnumDef.cs" />
     <Compile Include="GlobalConfig.cs" />
-    <Compile Include="Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LoginSelector.xaml.cs">
-      <DependentUpon>LoginSelector.xaml</DependentUpon>
-    </Compile>
+
     <Compile Include="Models\ParamModel.cs" />
     <Compile Include="Pages\InteractiveSystemConfigPage.xaml.cs" />
     <Compile Include="Pages\InterfaceConfigPage.xaml.cs">
@@ -287,9 +282,7 @@
     <Compile Include="Pages\FanoutReceiveConfigPage.xaml.cs">
       <DependentUpon>FanoutReceiveConfigPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\LoginConfigPage.xaml.cs">
-      <DependentUpon>LoginConfigPage.xaml</DependentUpon>
-    </Compile>
+
     <Compile Include="Pages\Popups\BayEditPopup.xaml.cs">
       <DependentUpon>BayEditPopup.xaml</DependentUpon>
     </Compile>
@@ -388,6 +381,36 @@
     </Compile>
     <Compile Include="Utli\EventBus.cs" />
     <Compile Include="Utli\Utli.cs" />
+    <Compile Include="Services\LogHelper.cs" />
+    <Compile Include="Services\ServiceTest.cs" />
+    <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="Services\DbConnectionService.cs" />
+    <Compile Include="Services\ApplicationStateService.cs" />
+    <Compile Include="Services\ErrorHandlingService.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\Examples\ExamplePageViewModel.cs" />
+    <Compile Include="Interfaces\IDbConnectionService.cs" />
+    <Compile Include="Interfaces\IApplicationStateService.cs" />
+    <Compile Include="Interfaces\IErrorHandlingService.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Models\Entities\TagEntity.cs" />
+    <Compile Include="Models\Entities\ScreenEntity.cs" />
+    <Compile Include="Models\Entities\BlockEntity.cs" />
+    <Compile Include="Models\TagDataType.cs" />
+    <Compile Include="Models\TagModel.cs" />
+    <Compile Include="Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\TagRepository.cs" />
+    <Compile Include="Repositories\ScreenRepository.cs" />
+    <Compile Include="Repositories\BlockRepository.cs" />
+    <Compile Include="Services\RepositoryTestService.cs" />
+    <Compile Include="ViewModels\Modern\ModernTagConfigPageViewModel.cs" />
+    <Compile Include="ViewModels\Modern\ModernScreenConfigPageViewModel.cs" />
+    <Compile Include="ViewModels\Modern\ModernBlockConfigViewModel.cs" />
+    <Compile Include="ViewModels\Modern\ModernArchitectureTestViewModel.cs" />
+    <Compile Include="Pages\Modern\ModernArchitectureTestPage.xaml.cs">
+      <DependentUpon>ModernArchitectureTestPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\InteractiveSystemConfigPageViewModel.cs" />
     <Compile Include="ViewModels\InterfaceConfigPageViewModel.cs" />
     <Compile Include="ViewModels\Popups\ScreenCswSelectPopupViewModel.cs" />
@@ -400,7 +423,7 @@
     <Compile Include="ViewModels\ControlDefaultValueConfigPageViewModel.cs" />
     <Compile Include="ViewModels\EcsSystemConfigPageViewModel.cs" />
     <Compile Include="ViewModels\FanoutReceiveConfigPageViewModel.cs" />
-    <Compile Include="ViewModels\LoginConfigViewModel.cs" />
+
     <Compile Include="ViewModels\NewEcsSystemViewModel.cs" />
     <Compile Include="ViewModels\ParameterConfigPageViewModel.cs" />
     <Compile Include="ViewModels\Popups\BayEditPopupViewModel.cs" />
@@ -511,14 +534,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Page Include="Login.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LoginSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -591,10 +607,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\LoginConfigPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+
     <Page Include="Pages\Popups\BayEditPopup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -723,6 +736,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Modern\ModernArchitectureTestPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StartWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -769,9 +786,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="projConfig.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
@@ -917,9 +932,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="ReleaseNote.txt" />
-    <None Include="templateConfig.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="REFACTORING_PHASE1_SUMMARY.md" />
+    <None Include="REFACTORING_PHASE2_SUMMARY.md" />
+    <None Include="REFACTORING_PHASE3_SUMMARY.md" />
+    <None Include="REFACTORING_PHASE4_SUMMARY.md" />
+    <None Include="MIGRATION_GUIDE.md" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Libs\img\" />

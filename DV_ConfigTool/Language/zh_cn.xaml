@@ -1,0 +1,47 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib"
+                    xmlns:local="clr-namespace:DataViewConfig">
+    <!--语言资源文件-->
+    <!--导航菜单-->
+    <s:String x:Key="application_title">DataView配置工具</s:String>
+    <s:String x:Key="main_menu_debug">调试</s:String>
+    <s:String x:Key="main_menu_config_view">配置总览</s:String>
+    <s:String x:Key="main_menu_base_info">基础信息</s:String>
+    <s:String x:Key="main_menu_base_crane">设备</s:String>
+    <s:String x:Key="main_menu_base_ros">操作台</s:String>
+    <s:String x:Key="main_menu_base_block">堆场</s:String>
+    <s:String x:Key="main_menu_project_config">工程配置</s:String>
+    <s:String x:Key="main_menu_project_tag">点名</s:String>
+    <s:String x:Key="main_menu_project_screen">画面</s:String>
+    <s:String x:Key="main_menu_project_control">控件</s:String>
+    <s:String x:Key="main_menu_func_config">基础功能</s:String>
+    <s:String x:Key="main_menu_func_login">登录</s:String>
+    <s:String x:Key="main_menu_func_switch_screen">画面跳转</s:String>
+    <s:String x:Key="main_menu_func_tips_window">提示弹窗</s:String>
+    <s:String x:Key="main_menu_func_interactive_config">交互功能</s:String>
+    <s:String x:Key="main_menu_func_interactive_parameter_list">参数列表</s:String>
+    <!--配置总览页面-->
+    <s:String x:Key="config_view_current_project_type">当前项目类型</s:String>
+    <s:String x:Key="config_view_project_type_rxg_crane">场桥</s:String>
+    <s:String x:Key="config_view_project_type_qc_crane">岸桥</s:String>
+    <s:String x:Key="config_view_project_type_mixed_crane">混合</s:String>
+    <s:String x:Key="config_view_current_ros">当前操作台</s:String>
+    <s:String x:Key="config_view_current_ros_id">操作台ID</s:String>
+    <s:String x:Key="config_view_base_info">基础信息</s:String>
+    <s:String x:Key="config_view_base_crane">设备</s:String>
+    <s:String x:Key="config_view_base_ros">操作台</s:String>
+    <s:String x:Key="config_view_interactive_info">交互信息</s:String>
+    <s:String x:Key="config_view_interactive_object">交互对象</s:String>
+    <s:String x:Key="config_view_interactive_communication_type">通讯类型</s:String>
+    <s:String x:Key="config_view_language_config">语言配置</s:String>
+    <s:String x:Key="config_view_operate_save">保存</s:String>
+    <s:String x:Key="config_view_operate_edit">编辑</s:String>
+    <!--底边栏状态显示-->
+    <s:String x:Key="footer_version">配置工具</s:String>
+    <s:String x:Key="footer_config_database">配置数据库</s:String>
+    <s:String x:Key="footer_current_project_path">当前工程路径</s:String>
+    <!--弹窗提示-->
+    <s:String x:Key="popup_save_success">保存成功!</s:String>
+    <s:String x:Key="popup_save_failed">保存失败!</s:String>
+</ResourceDictionary>

@@ -1,0 +1,158 @@
+<UserControl x:Class="DataViewConfig.Pages.Modern.ModernArchitectureTestPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="1000">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题区域 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="🚀 新架构测试页面" FontSize="24" FontWeight="Bold" Foreground="#2E86AB"/>
+            <TextBlock Text="Repository模式 + 现代化命令系统" FontSize="14" Foreground="#666" Margin="20,5,0,0"/>
+        </StackPanel>
+
+        <!-- 功能测试区域 -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <Button Content="🧪 测试Repository"
+                    Command="{Binding TestRepositoryCommand}"
+                    Margin="0,0,10,0"
+                    Padding="15,8"/>
+
+            <Button Content="📊 加载标签数据"
+                    Command="{Binding LoadTagDataCommand}"
+                    Margin="0,0,10,0"
+                    Padding="15,8"/>
+
+            <Button Content="🖼️ 加载画面数据"
+                    Command="{Binding LoadScreenDataCommand}"
+                    Margin="0,0,10,0"
+                    Padding="15,8"/>
+
+            <Button Content="🏗️ 加载堆场数据"
+                    Command="{Binding LoadBlockDataCommand}"
+                    Margin="0,0,10,0"
+                    Padding="15,8"/>
+
+            <Button Content="🔄 刷新全部"
+                    Command="{Binding RefreshAllCommand}"
+                    Padding="15,8"/>
+        </StackPanel>
+
+        <!-- 主要内容区域 -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 左侧：状态和日志 -->
+            <GroupBox Grid.Column="0" Header="📋 系统状态">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 状态信息 -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="当前状态:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   Foreground="{Binding StatusColor}"
+                                   FontSize="14"/>
+                    </StackPanel>
+
+                    <!-- 统计信息 -->
+                    <StackPanel Grid.Row="2" Margin="0,0,0,10">
+                        <TextBlock Text="数据统计:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBlock Text="{Binding TagCount, StringFormat='标签数量: {0}'}" Margin="0,2"/>
+                        <TextBlock Text="{Binding ScreenCount, StringFormat='画面数量: {0}'}" Margin="0,2"/>
+                        <TextBlock Text="{Binding BlockCount, StringFormat='堆场数量: {0}'}" Margin="0,2"/>
+                    </StackPanel>
+
+                    <!-- 操作日志 -->
+                    <GroupBox Grid.Row="3" Header="📝 操作日志">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding LogMessages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   FontFamily="Consolas"
+                                                   FontSize="12"
+                                                   Margin="0,1"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
+
+            <!-- 分隔线 -->
+            <GridSplitter Grid.Column="1"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Background="#E0E0E0"/>
+
+            <!-- 右侧：数据展示 -->
+            <GroupBox Grid.Column="2" Header="📊 数据展示">
+                <TabControl>
+                    <!-- 标签数据 -->
+                    <TabItem Header="🏷️ 标签">
+                        <DataGrid ItemsSource="{Binding TagSampleData}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                <DataGridTextColumn Header="内部名称" Binding="{Binding TagInternalName}" Width="150"/>
+                                <DataGridTextColumn Header="显示名称" Binding="{Binding TagName}" Width="120"/>
+                                <DataGridTextColumn Header="描述" Binding="{Binding Desc}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+
+                    <!-- 画面数据 -->
+                    <TabItem Header="🖼️ 画面">
+                        <DataGrid ItemsSource="{Binding ScreenSampleData}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding dv_screen_id}" Width="60"/>
+                                <DataGridTextColumn Header="内部名称" Binding="{Binding dv_screen_internal_name}" Width="150"/>
+                                <DataGridTextColumn Header="CSW文件" Binding="{Binding dv_screen_csw_name}" Width="120"/>
+                                <DataGridTextColumn Header="类型" Binding="{Binding dv_screen_type}" Width="80"/>
+                                <DataGridTextColumn Header="描述" Binding="{Binding dv_screen_desc}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+
+                    <!-- 堆场数据 -->
+                    <TabItem Header="🏗️ 堆场">
+                        <DataGrid ItemsSource="{Binding BlockSampleData}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding BlockID}" Width="60"/>
+                                <DataGridTextColumn Header="名称" Binding="{Binding BlockName}" Width="120"/>
+                                <DataGridTextColumn Header="最小位置" Binding="{Binding BlockMinPos}" Width="80"/>
+                                <DataGridTextColumn Header="最大位置" Binding="{Binding BlockMaxPos}" Width="80"/>
+                                <DataGridTextColumn Header="描述" Binding="{Binding BlockDesc}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                </TabControl>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>
